@@ -203,6 +203,95 @@ export const changePasswordValidationSchema = yup.object({
     .oneOf([yup.ref('newPassword')], 'Passwords must match'),
 });
 
+// Create admin validation schema
+export const createAdminValidationSchema = yup.object({
+  username: yup
+    .string()
+    .required('Username is required')
+    .min(3, 'Username must be at least 3 characters')
+    .max(50, 'Username must not exceed 50 characters')
+    .matches(/^[a-zA-Z0-9_]+$/, 'Username can only contain letters, numbers, and underscores'),
+  email: yup
+    .string()
+    .email('Please enter a valid email address')
+    .required('Email is required')
+    .max(255, 'Email must not exceed 255 characters'),
+  firstName: yup
+    .string()
+    .required('First name is required')
+    .min(2, 'First name must be at least 2 characters')
+    .max(50, 'First name must not exceed 50 characters')
+    .matches(/^[a-zA-Z\s]+$/, 'First name can only contain letters and spaces'),
+  lastName: yup
+    .string()
+    .required('Last name is required')
+    .min(2, 'Last name must be at least 2 characters')
+    .max(50, 'Last name must not exceed 50 characters')
+    .matches(/^[a-zA-Z\s]+$/, 'Last name can only contain letters and spaces'),
+  role: yup
+    .string()
+    .oneOf(['super_admin', 'admin', 'moderator'], 'Role must be super_admin, admin, or moderator')
+    .required('Role is required'),
+  permissions: yup
+    .array()
+    .of(yup.string())
+    .min(1, 'At least one permission is required')
+    .required('Permissions are required'),
+  password: yup
+    .string()
+    .required('Password is required')
+    .min(8, 'Password must be at least 8 characters')
+    .max(128, 'Password must not exceed 128 characters')
+    .matches(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
+      'Password must contain at least one lowercase letter, one uppercase letter, and one number'
+    ),
+  confirmPassword: yup
+    .string()
+    .required('Please confirm your password')
+    .oneOf([yup.ref('password')], 'Passwords must match'),
+});
+
+// Edit admin validation schema
+export const editAdminValidationSchema = yup.object({
+  username: yup
+    .string()
+    .required('Username is required')
+    .min(3, 'Username must be at least 3 characters')
+    .max(50, 'Username must not exceed 50 characters')
+    .matches(/^[a-zA-Z0-9_]+$/, 'Username can only contain letters, numbers, and underscores'),
+  email: yup
+    .string()
+    .email('Please enter a valid email address')
+    .required('Email is required')
+    .max(255, 'Email must not exceed 255 characters'),
+  firstName: yup
+    .string()
+    .required('First name is required')
+    .min(2, 'First name must be at least 2 characters')
+    .max(50, 'First name must not exceed 50 characters')
+    .matches(/^[a-zA-Z\s]+$/, 'First name can only contain letters and spaces'),
+  lastName: yup
+    .string()
+    .required('Last name is required')
+    .min(2, 'Last name must be at least 2 characters')
+    .max(50, 'Last name must not exceed 50 characters')
+    .matches(/^[a-zA-Z\s]+$/, 'Last name can only contain letters and spaces'),
+  role: yup
+    .string()
+    .oneOf(['super_admin', 'admin', 'moderator'], 'Role must be super_admin, admin, or moderator')
+    .required('Role is required'),
+  permissions: yup
+    .array()
+    .of(yup.string())
+    .min(1, 'At least one permission is required')
+    .required('Permissions are required'),
+  status: yup
+    .string()
+    .oneOf(['active', 'inactive'], 'Status must be either active or inactive')
+    .required('Status is required'),
+});
+
 // Helper function to get validation schema by entity type
 export const getValidationSchema = (entityType: string) => {
   switch (entityType) {
@@ -222,6 +311,10 @@ export const getValidationSchema = (entityType: string) => {
       return registerValidationSchema;
     case 'changePassword':
       return changePasswordValidationSchema;
+    case 'createAdmin':
+      return createAdminValidationSchema;
+    case 'editAdmin':
+      return editAdminValidationSchema;
     default:
       throw new Error(`Unknown entity type: ${entityType}`);
   }

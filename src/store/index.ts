@@ -4,6 +4,7 @@ import applicationsReducer from "./slices/applicationsSlice";
 import rightsReducer from "./slices/rightsSlice";
 import accountsReducer from "./slices/accountsSlice";
 import usersReducer from "./slices/usersSlice";
+import adminManagementReducer from "./slices/adminManagementSlice";
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     rights: rightsReducer,
     accounts: accountsReducer,
     users: usersReducer,
+    adminManagement: adminManagementReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

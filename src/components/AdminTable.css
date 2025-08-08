@@ -1,0 +1,448 @@
+/* AdminTable Component Styles - Microsoft Fluent Design Compact */
+
+.admin-table-container {
+  background: var(--ms-bg-primary);
+  border-radius: var(--ms-radius-lg);
+  box-shadow: var(--ms-shadow-4);
+  border: 1px solid var(--ms-border-primary);
+  overflow: hidden;
+  font-size: 12px;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  min-height: calc(24px * 15 + 24px + 36px);
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.table-header-cell {
+  background: #ffffff;
+  padding: 4px 8px;
+  text-align: left;
+  font-weight: 700;
+  color: var(--ms-text-primary);
+  font-size: 11px;
+  border-bottom: 1px solid var(--ms-border-primary);
+  height: 24px;
+  white-space: nowrap;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+}
+
+.header-content.sortable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.header-content.sortable:hover {
+  color: var(--ms-primary);
+}
+
+.sort-icon {
+  color: var(--ms-text-secondary);
+  transition: all var(--ms-transition-normal);
+  width: 14px;
+  height: 14px;
+}
+
+.header-content.sortable:hover .sort-icon {
+  color: var(--ms-primary);
+}
+
+.table-row {
+  transition: all var(--ms-transition-normal);
+  height: 24px;
+  cursor: pointer;
+}
+
+.table-row:hover {
+  background: var(--ms-bg-tertiary);
+}
+
+.table-cell {
+  padding: 0px 8px;
+  border-bottom: 1px solid var(--ms-border-secondary);
+  font-size: 12px;
+  color: var(--ms-text-primary);
+  vertical-align: middle;
+  height: 24px;
+}
+
+.actions-cell {
+  width: 100px;
+  text-align: center;
+  padding: 4px 8px;
+}
+
+.action-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  flex-direction: row !important;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px !important;
+  border: none;
+  border-radius: var(--ms-radius-sm);
+  cursor: pointer;
+  transition: all var(--ms-transition-normal);
+  font-family: inherit;
+  position: relative;
+}
+
+.action-btn svg {
+  width: 14px;
+  height: 14px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.action-btn.edit-btn {
+  background: var(--ms-primary);
+  color: var(--ms-white);
+  border: 1px solid var(--ms-primary);
+}
+
+.action-btn.edit-btn:hover {
+  background: var(--ms-primary-hover);
+  border-color: var(--ms-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--ms-shadow-4);
+}
+
+.action-btn.delete-btn {
+  background: var(--ms-error);
+  color: var(--ms-white);
+  border: 1px solid var(--ms-error);
+}
+
+.action-btn.delete-btn:hover {
+  background: #b91c1c;
+  border-color: #b91c1c;
+  transform: translateY(-1px);
+  box-shadow: var(--ms-shadow-4);
+}
+
+/* Admin-specific cell styles */
+.admin-name-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.admin-name {
+  font-weight: 600;
+  color: var(--ms-text-primary);
+  font-size: 12px;
+}
+
+.admin-username {
+  font-size: 10px;
+  color: var(--ms-text-secondary);
+}
+
+.admin-email {
+  font-size: 12px;
+  color: var(--ms-text-primary);
+}
+
+.status-cell {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.status-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  background: none;
+  border: 1px solid var(--ms-border-primary);
+  border-radius: var(--ms-radius-sm);
+  cursor: pointer;
+  transition: all var(--ms-transition-normal);
+  color: var(--ms-text-secondary);
+}
+
+.status-toggle-btn:hover {
+  background: var(--ms-bg-tertiary);
+  border-color: var(--ms-primary);
+  color: var(--ms-primary);
+}
+
+/* Table-specific status toggle styling */
+.table-status-toggle .status-toggle-btn {
+  width: 20px;
+  height: 20px;
+}
+
+.table-status-toggle .status-toggle-btn svg {
+  width: 10px;
+  height: 10px;
+}
+
+.last-login-cell,
+.created-cell {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: var(--ms-text-secondary);
+}
+
+.cell-icon {
+  color: var(--ms-text-secondary);
+  flex-shrink: 0;
+}
+
+/* Role Badge Styles */
+.role-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 4px;
+  border-radius: var(--ms-radius-sm);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+}
+
+.role-super_admin {
+  background: rgba(239, 68, 68, 0.1);
+  color: rgb(220, 38, 38);
+}
+
+.role-admin {
+  background: rgba(59, 130, 246, 0.1);
+  color: rgb(37, 99, 235);
+}
+
+.role-manager {
+  background: rgba(147, 51, 234, 0.1);
+  color: rgb(126, 34, 206);
+}
+
+.role-user {
+  background: rgba(34, 197, 94, 0.1);
+  color: rgb(22, 163, 74);
+}
+
+/* Status Badge Styles */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 4px;
+  border-radius: var(--ms-radius-sm);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+}
+
+.status-badge.active {
+  background: rgba(16, 124, 16, 0.1);
+  color: var(--ms-success);
+}
+
+.status-badge.inactive {
+  background: rgba(209, 52, 56, 0.1);
+  color: var(--ms-error);
+}
+
+/* Pagination Styles */
+.table-pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  border-top: 1px solid var(--ms-border-secondary);
+  background: #ffffff;
+  min-height: 36px;
+}
+
+.pagination-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  font-size: 11px;
+  color: var(--ms-text-secondary);
+}
+
+/* Loading Skeleton Styles */
+.loading-skeleton {
+  padding: 12px;
+}
+
+.skeleton-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  gap: 12px;
+}
+
+.skeleton-search {
+  width: 200px;
+  height: 28px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+  border-radius: var(--ms-radius-md);
+}
+
+.skeleton-button {
+  width: 100px;
+  height: 28px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+  border-radius: var(--ms-radius-md);
+}
+
+.skeleton-table {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.skeleton-row {
+  display: flex;
+  gap: 8px;
+  height: 24px;
+  align-items: center;
+}
+
+.skeleton-cell {
+  flex: 1;
+  height: 16px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+  border-radius: var(--ms-radius-sm);
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Empty State Styles */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  text-align: center;
+  color: var(--ms-text-secondary);
+}
+
+.empty-icon {
+  color: var(--ms-text-secondary);
+  margin-bottom: 16px;
+}
+
+.empty-state h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ms-text-primary);
+  margin-bottom: 8px;
+}
+
+.empty-state p {
+  font-size: 12px;
+  color: var(--ms-text-secondary);
+  margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .admin-table {
+    font-size: 11px;
+  }
+
+  .table-cell {
+    padding: 3px 6px;
+  }
+
+  .admin-name-cell {
+    min-width: 120px;
+  }
+
+  .admin-email {
+    font-size: 11px;
+  }
+
+  .status-cell {
+    gap: 4px;
+  }
+
+  .last-login-cell,
+  .created-cell {
+    font-size: 10px;
+  }
+
+  .table-pagination {
+    flex-direction: column;
+    gap: 6px;
+    padding: 6px 8px;
+  }
+
+  .pagination-info {
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-table-container {
+    border-radius: var(--ms-radius-md);
+  }
+
+  .table-wrapper {
+    overflow-x: auto;
+  }
+
+  .admin-table {
+    min-width: 600px;
+  }
+
+  .action-buttons {
+    gap: 2px;
+  }
+
+  .action-btn {
+    width: 24px;
+    height: 24px !important;
+  }
+
+  .action-btn svg {
+    width: 12px;
+    height: 12px;
+  }
+}

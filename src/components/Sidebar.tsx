@@ -3,12 +3,14 @@ import { Link, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { logout } from "../store/slices/authSlice";
 import { useAuth } from "react-oidc-context";
+import { usePermissions, ADMIN_PERMISSIONS } from "../utils/permissions";
 import {
   LayoutDashboard,
   Rocket,
   Shield,
   Users,
   User,
+  UserCog,
   LogOut,
   Menu,
   ChevronRight,
@@ -22,6 +24,7 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ children }) => {
   const dispatch = useDispatch<AppDispatch>();
   const userData = useAuth();
+  const { canManageAdmins } = usePermissions();
   // const { user } = useSelector((state: RootState) => state.auth); // Unused for now
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -98,6 +101,16 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
             <span>Users</span>
             <ChevronRight size={16} className="nav-arrow" />
           </Link>
+          {canManageAdmins() && (
+            <Link
+              to="/manage-admin"
+              className={`nav-item ${isActive("/manage-admin") ? "active" : ""}`}
+            >
+              <UserCog size={18} />
+              <span>Manage Admin</span>
+              <ChevronRight size={16} className="nav-arrow" />
+            </Link>
+          )}
         </nav>
 
         <div className="sidebar-footer">

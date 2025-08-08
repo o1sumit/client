@@ -9,6 +9,9 @@ import type {
 import type {
   Account,
   AccountSharing,
+  AdminPermission,
+  AdminRole,
+  AdminUser,
   Application,
   Permission,
   Rights,
@@ -24,7 +27,7 @@ export type {
   VerifyResponse
 } from "../types/api";
 export type {
-  Account, AccountSharing, Application, Permission, Rights, User
+  Account, AccountSharing, AdminPermission, AdminRole, AdminUser, Application, Permission, Rights, User
 } from "../types/entities";
 
 // Create axios instance with dynamic base URL from configuration
@@ -249,6 +252,52 @@ export const appXAPI = {
     api.post<ApiResponse>(`/app-x/register-application`, data),
   getApplications: () => api.get<ApiResponse>(`/app-x/applications`),
   health: () => api.get<ApiResponse>(`/app-x/health`),
+};
+
+// Admin Management API - Uses centralized configuration
+export const adminManagementAPI = {
+  getAll: (params?: {
+    search?: string;
+    role?: AdminRole;
+    status?: 'active' | 'inactive';
+    page?: number;
+    limit?: number;
+  }) => api.get<ApiResponse<AdminUser[]>>("/admin-management", { params }),
+  
+  getById: (id: string) => 
+    api.get<ApiResponse<AdminUser>>(`/admin-management/${id}`),
+  
+  create: (data: {
+    username: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    role: AdminRole;
+    permissions: string[];
+    password: string;
+  }) => api.post<ApiResponse<AdminUser>>("/admin-management", data),
+  
+  update: (id: string, data: {
+    username?: string;
+    email?: string;
+    firstName?: string;
+    lastName?: string;
+    role?: AdminRole;
+    permissions?: string[];
+    status?: 'active' | 'inactive';
+  }) => api.put<ApiResponse<AdminUser>>(`/admin-management/${id}`, data),
+  
+  toggleStatus: (id: string) => 
+    api.patch<ApiResponse<AdminUser>>(`/admin-management/${id}/toggle-status`),
+  
+  delete: (id: string) => 
+    api.delete<ApiResponse>(`/admin-management/${id}`),
+  
+  getPermissions: () => 
+    api.get<ApiResponse<AdminPermission[]>>("/admin-management/permissions"),
+  
+  getRoles: () => 
+    api.get<ApiResponse<AdminRole[]>>("/admin-management/roles")
 };
 
 // Health check - Uses centralized configuration

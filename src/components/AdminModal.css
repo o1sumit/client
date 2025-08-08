@@ -1,0 +1,201 @@
+/* Admin Modal Styles - Following Microsoft Fluent Design Compact */
+.admin-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: var(--ms-spacing-md);
+}
+
+.admin-modal {
+  background: var(--ms-bg-primary);
+  border-radius: var(--ms-radius-lg);
+  box-shadow: var(--ms-shadow-32);
+  border: 1px solid var(--ms-border-primary);
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+  animation: admin-modal-fade-in 0.2s ease-out;
+}
+
+@keyframes admin-modal-fade-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.admin-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--ms-spacing-lg);
+  border-bottom: 1px solid var(--ms-border-secondary);
+  background: var(--ms-bg-primary);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.admin-modal-header h2 {
+  font-size: var(--ms-font-size-lg);
+  font-weight: 600;
+  color: var(--ms-text-primary);
+  margin: 0;
+}
+
+.admin-modal-close-btn {
+  background: none;
+  border: none;
+  font-size: var(--ms-font-size-lg);
+  cursor: pointer;
+  color: var(--ms-text-secondary);
+  padding: var(--ms-spacing-xs);
+  border-radius: var(--ms-radius-sm);
+  transition: all var(--ms-transition-normal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+}
+
+.admin-modal-close-btn:hover {
+  background: var(--ms-bg-tertiary);
+  color: var(--ms-text-primary);
+}
+
+.admin-modal-body {
+  padding: var(--ms-spacing-lg);
+}
+
+.admin-modal-content {
+  color: var(--ms-text-primary);
+}
+
+.admin-modal-content p {
+  margin-bottom: var(--ms-spacing-md);
+  color: var(--ms-text-secondary);
+}
+
+.admin-modal-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--ms-spacing-xl);
+  color: var(--ms-text-secondary);
+}
+
+.admin-modal-spinner {
+  width: 32px;
+  height: 32px;
+  border: 2px solid var(--ms-border-primary);
+  border-top: 2px solid var(--ms-primary);
+  border-radius: 50%;
+  animation: admin-modal-spin 1s linear infinite;
+  margin-bottom: var(--ms-spacing-sm);
+}
+
+@keyframes admin-modal-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Admin Modal Footer Styles */
+.admin-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--ms-spacing-sm);
+  padding: var(--ms-spacing-lg);
+  border-top: 1px solid var(--ms-border-secondary);
+  background: var(--ms-bg-primary);
+  position: sticky;
+  bottom: 0;
+}
+
+.admin-modal-btn {
+  padding: var(--ms-spacing-xs) var(--ms-spacing-md);
+  border-radius: var(--ms-radius-md);
+  font-size: var(--ms-font-size-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--ms-transition-normal);
+  font-family: inherit;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+}
+
+.admin-modal-btn-secondary {
+  background: var(--ms-bg-tertiary);
+  color: var(--ms-text-primary);
+  border-color: var(--ms-border-primary);
+}
+
+.admin-modal-btn-secondary:hover {
+  background: var(--ms-bg-primary);
+  border-color: var(--ms-primary);
+  color: var(--ms-primary);
+}
+
+.admin-modal-btn-primary {
+  background: var(--ms-primary);
+  color: var(--ms-white);
+  border-color: var(--ms-primary);
+}
+
+.admin-modal-btn-primary:hover {
+  background: var(--ms-primary-hover);
+}
+
+.admin-modal-btn-primary:disabled {
+  background: var(--ms-bg-tertiary);
+  color: var(--ms-text-secondary);
+  border-color: var(--ms-border-primary);
+  cursor: not-allowed;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .admin-modal-overlay {
+    padding: var(--ms-spacing-sm);
+  }
+  
+  .admin-modal {
+    max-height: 90vh;
+  }
+  
+  .admin-modal-header {
+    padding: var(--ms-spacing-md);
+  }
+  
+  .admin-modal-body {
+    padding: var(--ms-spacing-md);
+  }
+  
+  .admin-modal-footer {
+    padding: var(--ms-spacing-md);
+    flex-direction: column;
+  }
+  
+  .admin-modal-btn {
+    width: 100%;
+  }
+}

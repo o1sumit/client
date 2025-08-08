@@ -18,6 +18,7 @@ const Applications = () => {
     applicationId: "",
     description: "",
     status: "active",
+    applicationSecret: ""
   });
 
   // Load applications from API
@@ -43,6 +44,7 @@ const Applications = () => {
             name: "APP-X",
             applicationId: "app-x",
             description: "User Management System",
+            applicationSecret: "app-x-secret",
             status: "active",
             createdAt: "2024-01-15T10:00:00Z",
             updatedAt: "2024-01-15T10:00:00Z",
@@ -52,6 +54,7 @@ const Applications = () => {
             name: "APP-Y",
             applicationId: "app-y",
             description: "Analytics Platform",
+            applicationSecret: "app-y-secret",
             status: "active",
             createdAt: "2024-01-16T10:00:00Z",
             updatedAt: "2024-01-16T10:00:00Z",
@@ -62,6 +65,7 @@ const Applications = () => {
             applicationId: "app-z",
             description: "Communication System",
             status: "active",
+            applicationSecret: "app-z-secret",
             createdAt: "2024-01-17T10:00:00Z",
             updatedAt: "2024-01-17T10:00:00Z",
           },
@@ -95,6 +99,7 @@ const Applications = () => {
           applicationId: "",
           description: "",
           status: "active",
+          applicationSecret: ""
         });
         setShowAddModal(false);
         toast.success("Application added successfully!");
@@ -112,6 +117,7 @@ const Applications = () => {
       applicationId: application.applicationId,
       description: application.description || "",
       status: application.status,
+      applicationSecret: application.applicationSecret
     });
     setShowAddModal(true);
   };
@@ -138,6 +144,7 @@ const Applications = () => {
           applicationId: "",
           description: "",
           status: "active",
+          applicationSecret: ""
         });
         setEditingApp(null);
         setShowAddModal(false);
@@ -284,6 +291,7 @@ const Applications = () => {
                     name: "",
                     applicationId: "",
                     description: "",
+                    applicationSecret: "",
                     status: "active",
                   });
                 }}
@@ -318,11 +326,11 @@ const Applications = () => {
                 <label>Application Secret *</label>
                 <input
                   type="text"
-                  value={formData.applicationId}
+                  value={formData.applicationSecret}
                   onChange={(e) =>
-                    setFormData({ ...formData, applicationId: e.target.value })
+                    setFormData({ ...formData, applicationSecret: e.target.value })
                   }
-                  placeholder="Enter application ID"
+                  placeholder="Enter application Secret"
                 />
               </div>
               <div className="form-group">
@@ -362,6 +370,7 @@ const Applications = () => {
                     name: "",
                     applicationId: "",
                     description: "",
+                    applicationSecret: "",
                     status: "active",
                   });
                 }}

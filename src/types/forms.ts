@@ -6,12 +6,14 @@ import type {
   UserStatus,
   AccountType,
   AccountStatus,
-  Permission
+  Permission,
+  AdminRole
 } from './entities';
 
 // Application form data interface
 export interface ApplicationFormData {
   name: string;
+  applicationSecret: string;
   applicationId: string;
   description?: string;
   status: ApplicationStatus;
@@ -87,6 +89,36 @@ export interface FormState<T> {
   isSubmitting: boolean;
   isValid: boolean;
   touched: Record<keyof T, boolean>;
+}
+
+// Create admin form data interface
+export interface CreateAdminFormData {
+  username: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  role: AdminRole;
+  permissions: string[];
+  password: string;
+  confirmPassword: string;
+}
+
+// Edit admin form data interface
+export interface EditAdminFormData {
+  username: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  role: AdminRole;
+  permissions: string[];
+  status: UserStatus;
+}
+
+// Admin filters data interface
+export interface AdminFiltersData {
+  search: string;
+  role: AdminRole | 'all';
+  status: UserStatus | 'all';
 }
 
 // Modal form props interface

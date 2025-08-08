@@ -14,6 +14,9 @@ import Applications from "./components/Applications";
 import RightsComponent from "./components/Rights";
 import Users from "./components/Users";
 import Accounts from "./components/Accounts";
+import ManageAdmin from "./components/ManageAdmin";
+import PermissionRoute from "./components/PermissionRoute";
+import UnauthorizedAccess from "./components/UnauthorizedAccess";
 import "./index.css";
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -38,6 +41,17 @@ function App() {
               <Route path="rights" element={<RightsComponent />} />
               <Route path="users" element={<Users />} />
               <Route path="accounts" element={<Accounts />} />
+              <Route 
+                path="manage-admin" 
+                element={
+                  <PermissionRoute 
+                    requiredPermission="view_admin_management"
+                    fallbackComponent={<UnauthorizedAccess />}
+                  >
+                    <ManageAdmin />
+                  </PermissionRoute>
+                } 
+              />
             </Route>
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>

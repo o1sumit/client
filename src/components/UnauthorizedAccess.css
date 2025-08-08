@@ -1,0 +1,105 @@
+/* Unauthorized Access Styles - Following Microsoft Fluent Design Compact */
+.unauthorized-access {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: var(--ms-bg-primary);
+  padding: var(--ms-spacing-lg);
+}
+
+.unauthorized-content {
+  text-align: center;
+  max-width: 500px;
+  padding: var(--ms-spacing-xl);
+  background: var(--ms-bg-secondary);
+  border: 1px solid var(--ms-border-secondary);
+  border-radius: var(--ms-radius-lg);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.unauthorized-icon {
+  margin-bottom: var(--ms-spacing-lg);
+  color: var(--ms-error);
+}
+
+.unauthorized-title {
+  font-size: var(--ms-font-size-xl);
+  font-weight: 700;
+  color: var(--ms-text-primary);
+  margin: 0 0 var(--ms-spacing-md) 0;
+}
+
+.unauthorized-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ms-spacing-sm);
+  margin-bottom: var(--ms-spacing-lg);
+  padding: var(--ms-spacing-md);
+  background: var(--ms-bg-tertiary);
+  border: 1px solid var(--ms-border-secondary);
+  border-radius: var(--ms-radius-md);
+  color: var(--ms-error);
+}
+
+.unauthorized-message p {
+  margin: 0;
+  font-weight: 600;
+  font-size: var(--ms-font-size-md);
+}
+
+.unauthorized-details {
+  margin-bottom: var(--ms-spacing-xl);
+}
+
+.unauthorized-details p {
+  margin: 0;
+  color: var(--ms-text-secondary);
+  font-size: var(--ms-font-size-sm);
+  line-height: 1.5;
+}
+
+.unauthorized-actions {
+  display: flex;
+  justify-content: center;
+}
+
+.unauthorized-actions .btn {
+  padding: var(--ms-spacing-sm) var(--ms-spacing-lg);
+  border-radius: var(--ms-radius-md);
+  font-size: var(--ms-font-size-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--ms-transition-normal);
+  font-family: inherit;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  text-decoration: none;
+  background: var(--ms-primary);
+  color: var(--ms-white);
+  border-color: var(--ms-primary);
+}
+
+.unauthorized-actions .btn:hover {
+  background: var(--ms-primary-hover);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .unauthorized-content {
+    padding: var(--ms-spacing-lg);
+    margin: var(--ms-spacing-md);
+  }
+  
+  .unauthorized-title {
+    font-size: var(--ms-font-size-lg);
+  }
+  
+  .unauthorized-message {
+    flex-direction: column;
+    text-align: center;
+  }
+}

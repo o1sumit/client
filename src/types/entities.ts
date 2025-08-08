@@ -8,6 +8,7 @@ export type AccountType = 'Temporary' | 'Personal' | 'Business';
 export type AccountStatus = 'active' | 'inactive';
 export type RightStatus = 'active' | 'inactive' | 'expired';
 export type Permission = 'read' | 'write' | 'admin' | 'owner' | 'delete';
+export type AdminRole = 'super_admin' | 'admin' | 'moderator';
 
 // Application entity interface
 export interface Application {
@@ -15,6 +16,7 @@ export interface Application {
   name: string;
   applicationId: string;
   description?: string;
+  applicationSecret: string;
   status: ApplicationStatus;
   createdAt: string;
   updatedAt: string;
@@ -85,4 +87,28 @@ export interface AuthUser {
   accountId: string;
   createdAt: string;
   updatedAt: string;
+}
+
+// Admin permission interface
+export interface AdminPermission {
+  id: string;
+  name: string;
+  description: string;
+  category: string;
+}
+
+// Admin user interface for admin management
+export interface AdminUser {
+  id: string;
+  username: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  role: AdminRole;
+  status: UserStatus;
+  permissions: AdminPermission[];
+  lastLoginAt?: string;
+  createdAt: string;
+  updatedAt: string;
+  createdBy: string;
 }

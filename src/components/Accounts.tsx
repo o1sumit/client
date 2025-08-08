@@ -488,7 +488,7 @@ const Accounts = () => {
                   placeholder="Enter account name"
                 />
               </div>
-              <div className="form-group">
+              {/* <div className="form-group">
                 <label>Account ID</label>
                 <input
                   type="text"
@@ -498,8 +498,8 @@ const Accounts = () => {
                   }
                   placeholder="Enter account ID"
                 />
-              </div>
-              <div className="form-group">
+              </div> */}
+              {/* <div className="form-group">
                 <label>Email</label>
                 <input
                   type="email"
@@ -509,7 +509,7 @@ const Accounts = () => {
                   }
                   placeholder="Enter account email"
                 />
-              </div>
+              </div> */}
               <div className="form-group">
                 <label>Description</label>
                 <textarea
