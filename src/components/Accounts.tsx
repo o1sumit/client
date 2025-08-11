@@ -3,24 +3,49 @@ import { toast } from "react-hot-toast";
 import type { ColumnDef } from "@tanstack/react-table";
 import DataTable from "./DataTable";
 import { accountsAPI } from "../services/api";
-import type { Account } from "../types/entities";
 import type { AccountFormData } from "../types/forms";
 import type { ApiResponse } from "../types/api";
+import { AccountStatus, AccountType } from "@/types/entities";
+
+// Local UI model for this screen
+type UIAccount = {
+  account_id: string;
+  account_name: string;
+  account_email: string;
+  // account_description: string;
+  account_type: string;
+  status: string;
+  created_on: string;
+  updated_on: string;
+};
+
+const mapToUIAccount = (account: any): UIAccount => ({
+  account_id: account.account_id,
+  account_name: account.account_name,
+  account_email: account.account_email,
+  // account_description: account.account_description,
+  account_type: (account.account_type ||
+    "Personal") as UIAccount["account_type"],
+  status: (account.status || "active") as UIAccount["status"],
+  created_on: account.created_on,
+  updated_on: account.updated_on,
+});
 
 const Accounts = () => {
-  const [accounts, setAccounts] = useState<Account[]>([]);
+  const [accounts, setAccounts] = useState<UIAccount[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showSharingModal, setShowSharingModal] = useState(false);
-  const [editingAccount, setEditingAccount] = useState<Account | null>(null);
-  const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
+  const [editingAccount, setEditingAccount] = useState<UIAccount | null>(null);
+  const [selectedAccount, setSelectedAccount] = useState<UIAccount | null>(
+    null
+  );
 
   const [formData, setFormData] = useState<AccountFormData>({
-    name: "",
-    accountId: "",
-    email: "",
-    description: "",
-    accountType: "Personal",
+    account_name: "",
+    account_email: "",
+    // account_description: "",
+    account_type: "personal" as AccountType,
     status: "active",
   });
 
@@ -29,9 +54,9 @@ const Accounts = () => {
   });
 
   const availableUsers = [
-    { id: "user-001", name: "John Doe" },
-    { id: "user-002", name: "Jane Smith" },
-    { id: "user-003", name: "Bob Johnson" },
+    { user_id: "user-001", user_name: "John Doe" },
+    { user_id: "user-002", user_name: "Jane Smith" },
+    { user_id: "user-003", user_name: "Bob Johnson" },
   ];
 
   // Load accounts from API
@@ -45,38 +70,18 @@ const Accounts = () => {
         console.log("Response.data:", response.data);
 
         // Handle new API response format: { success: true, data: [...], message: "..." }
-        const apiResponse = response.data as ApiResponse<Account[]>;
-        const accountsData = apiResponse.success && apiResponse.data
-          ? apiResponse.data
-          : (response.data as unknown as Account[]);
+        const apiResponse = response.data as ApiResponse<any[]>;
+        const accountsData =
+          apiResponse.success && apiResponse.data
+            ? apiResponse.data
+            : (response.data as unknown as any[]);
 
         console.log("Accounts data:", accountsData);
 
-        // Map to expected format
-        const mappedAccounts = (
+        // Map to UI model
+        const mappedAccounts: UIAccount[] = (
           Array.isArray(accountsData) ? accountsData : []
-        ).map(
-          (account: any) => {
-            console.log(
-              "Processing account:",
-              account.name,
-              "sharedAccounts:",
-              account.sharedAccounts
-            );
-            return {
-              id: account.id,
-              name: account.name,
-              accountId: account.accountId || account.id,
-              email: account.email || account?.users?.[0]?.email,
-              description: account.description,
-              accountType: account.accountType || "Personal",
-              status: account.status || "active",
-              sharedAccounts: account.sharedAccounts || [],
-              createdAt: account.createdAt,
-              updatedAt: account.updatedAt,
-            } as Account;
-          }
-        );
+        ).map(mapToUIAccount);
 
         console.log("Final mapped accounts:", mappedAccounts);
         setAccounts(mappedAccounts);
@@ -84,42 +89,36 @@ const Accounts = () => {
         console.error("Failed to load accounts:", error);
         toast.error("Failed to load accounts");
         // Fallback to mock data if API fails
-        const mockAccounts: Account[] = [
+        const mockAccounts: UIAccount[] = [
           {
-            id: "acc-001",
-            name: "John Doe",
-            accountId: "john-doe-001",
-            email: "john@example.com",
-            description: "Personal account for John Doe",
-            accountType: "Personal",
+            account_id: "acc-001",
+            account_name: "John Doe",
+            account_email: "john@example.com",
+            // account_description: "Personal account for John Doe",
+            account_type: "personal",
             status: "active",
-            sharedAccounts: ["user-002"],
-            createdAt: "2024-01-15T10:00:00Z",
-            updatedAt: "2024-01-15T10:00:00Z",
+            created_on: "2024-01-15T10:00:00Z",
+            updated_on: "2024-01-15T10:00:00Z",
           },
           {
-            id: "acc-002",
-            name: "Jane Smith",
-            accountId: "jane-smith-001",
-            email: "jane@example.com",
-            description: "Personal account for Jane Smith",
-            accountType: "Personal",
+            account_id: "acc-002",
+            account_name: "Jane Smith",
+            account_email: "jane@example.com",
+            // account_description: "Personal account for Jane Smith",
+            account_type: "personal",
             status: "active",
-            sharedAccounts: [],
-            createdAt: "2024-01-16T10:00:00Z",
-            updatedAt: "2024-01-16T10:00:00Z",
+            created_on: "2024-01-16T10:00:00Z",
+            updated_on: "2024-01-16T10:00:00Z",
           },
           {
-            id: "acc-003",
-            name: "Acme Corp",
-            accountId: "acme-corp-001",
-            email: "admin@acme.com",
-            description: "Business account for Acme Corporation",
-            accountType: "Business",
+            account_id: "acc-003",
+            account_name: "Acme Corp",
+            account_email: "admin@acme.com",
+            // account_description: "Business account for Acme Corporation",
+            account_type: "business",
             status: "active",
-            sharedAccounts: ["user-001", "user-002"],
-            createdAt: "2024-01-17T10:00:00Z",
-            updatedAt: "2024-01-17T10:00:00Z",
+            created_on: "2024-01-17T10:00:00Z",
+            updated_on: "2024-01-17T10:00:00Z",
           },
         ];
         setAccounts(mockAccounts);
@@ -136,15 +135,15 @@ const Accounts = () => {
       const response = await accountsAPI.create(formData);
       const newAccount = response.data?.data;
       if (newAccount) {
-        setAccounts((prev) => [newAccount, ...prev]);
+        const uiAccount = mapToUIAccount(newAccount);
+        setAccounts((prev) => [uiAccount, ...prev]);
         toast.success("Account created successfully");
         setShowAddModal(false);
         setFormData({
-          name: "",
-          accountId: "",
-          email: "",
-          description: "",
-          accountType: "Personal",
+          account_name: "",
+          account_email: "",
+          // account_description: "",
+          account_type: "personal" as AccountType,
           status: "active",
         });
       }
@@ -154,15 +153,14 @@ const Accounts = () => {
     }
   };
 
-  const handleEditAccount = async (account: Account) => {
+  const handleEditAccount = async (account: UIAccount) => {
     setEditingAccount(account);
     setFormData({
-      name: account.name,
-      accountId: account.accountId,
-      email: account.email || "",
-      description: account.description || "",
-      accountType: account.accountType,
-      status: account.status,
+      account_name: account.account_name,
+      account_email: account.account_email,
+      // account_description: account.account_description,
+      account_type: account.account_type as AccountType,
+      status: account.status as AccountStatus,
     });
     setShowAddModal(true);
   };
@@ -171,23 +169,26 @@ const Accounts = () => {
     if (!editingAccount) return;
 
     try {
-      const response = await accountsAPI.update(editingAccount.id, formData);
+      const response = await accountsAPI.update(
+        editingAccount.account_id,
+        formData
+      );
       const updatedAccount = response.data?.data;
       if (updatedAccount) {
+        const uiAccount = mapToUIAccount(updatedAccount);
         setAccounts((prev) =>
           prev.map((acc) =>
-            acc.id === editingAccount.id ? updatedAccount : acc
+            acc.account_id === editingAccount.account_id ? uiAccount : acc
           )
         );
         toast.success("Account updated successfully");
         setShowAddModal(false);
         setEditingAccount(null);
         setFormData({
-          name: "",
-          accountId: "",
-          email: "",
-          description: "",
-          accountType: "Personal",
+          account_name: "",
+          account_email: "",
+          // account_description: "",
+          account_type: "personal" as AccountType,
           status: "active",
         });
       }
@@ -197,11 +198,15 @@ const Accounts = () => {
     }
   };
 
-  const handleDeleteAccount = async (account: Account) => {
-    if (window.confirm(`Are you sure you want to delete ${account.name}?`)) {
+  const handleDeleteAccount = async (account: UIAccount) => {
+    if (
+      window.confirm(`Are you sure you want to delete ${account.account_name}?`)
+    ) {
       try {
-        await accountsAPI.delete(account.id);
-        setAccounts((prev) => prev.filter((acc) => acc.id !== account.id));
+        await accountsAPI.delete(account.account_id);
+        setAccounts((prev) =>
+          prev.filter((acc) => acc.account_id !== account.account_id)
+        );
         toast.success("Account deleted successfully");
       } catch (error) {
         console.error("Failed to delete account:", error);
@@ -210,20 +215,16 @@ const Accounts = () => {
     }
   };
 
-  const handleViewAccount = (account: Account) => {
+  const handleViewAccount = (account: UIAccount) => {
     console.log("=== OPENING SHARE MODAL ===");
     console.log("Account:", account);
-    console.log("Account sharedAccounts:", account.sharedAccounts);
     console.log("Available users:", availableUsers);
 
     // Verify the account has sharedAccounts field
-    if (!account.sharedAccounts) {
-      console.warn("⚠️ Account missing sharedAccounts field:", account);
-    }
 
     setSelectedAccount(account);
     setSharingData({
-      sharedAccounts: account.sharedAccounts || [],
+      sharedAccounts: [],
     });
     setShowSharingModal(true);
   };
@@ -233,13 +234,10 @@ const Accounts = () => {
     if (showSharingModal && selectedAccount) {
       console.log("=== MODAL OPENED ===");
       console.log("Selected account:", selectedAccount);
-      console.log(
-        "Selected account sharedAccounts:",
-        selectedAccount.sharedAccounts
-      );
+      console.log("Selected account sharedAccounts:");
       console.log("Current sharingData:", sharingData);
 
-      const initialSharedAccounts = selectedAccount.sharedAccounts || [];
+      const initialSharedAccounts: string[] = [];
       console.log("Setting initial sharedAccounts:", initialSharedAccounts);
 
       setSharingData({
@@ -260,9 +258,9 @@ const Accounts = () => {
 
     try {
       // Call the API to update account sharing
-      const response = await accountsAPI.update(selectedAccount.id, {
+      const response = await accountsAPI.update(selectedAccount.account_id, {
         sharedAccounts: sharingData.sharedAccounts,
-      });
+      } as unknown as any);
 
       console.log("API response:", response);
       console.log("Response data:", response.data);
@@ -271,7 +269,7 @@ const Accounts = () => {
         // Update local state with the response from API
         setAccounts((prev) =>
           prev.map((acc) =>
-            acc.id === selectedAccount.id
+            acc.account_id === selectedAccount.account_id
               ? { ...acc, sharedAccounts: sharingData.sharedAccounts }
               : acc
           )
@@ -306,19 +304,47 @@ const Accounts = () => {
     }));
   };
 
-  const columns: ColumnDef<Account>[] = [
+  const handleRefreshData = async () => {
+    try {
+      toast.loading("Refreshing data...");
+
+      const response = await accountsAPI.getAll();
+      const apiResponse = response.data as ApiResponse<any[]>;
+      const accountsData =
+        apiResponse.success && apiResponse.data
+          ? apiResponse.data
+          : (response.data as unknown as any[]);
+
+      const mappedAccounts: UIAccount[] = (
+        Array.isArray(accountsData) ? accountsData : []
+      ).map(mapToUIAccount);
+
+      setAccounts(mappedAccounts);
+
+      toast.dismiss();
+      toast.success("Data refreshed successfully!");
+    } catch (error) {
+      console.error("Failed to refresh data:", error);
+      toast.dismiss();
+      toast.error("Failed to refresh data");
+    }
+  };
+
+  const columns: ColumnDef<UIAccount>[] = [
     {
-      accessorKey: "name",
-      header: "Name",
+      accessorKey: "account_name",
+      header: "Account Name",
       cell: ({ row }) => (
-        <div className="font-medium">{row.getValue("name")}</div>
+        <div className="font-medium">{row.getValue("account_name")}</div>
       ),
     },
     {
-      accessorKey: "accountId",
+      accessorKey: "account_id",
       header: "Account ID",
       cell: ({ row }) => (
-        <div className="text-sm text-gray-500">{row.getValue("accountId")}</div>
+        <div className="text-sm text-gray-500">
+          {row.getValue("account_id")}
+        </div>
       ),
     },
     // {
@@ -332,10 +358,10 @@ const Accounts = () => {
     //   },
     // },
     {
-      accessorKey: "accountType",
-      header: "Type",
+      accessorKey: "account_type",
+      header: "Account Type",
       cell: ({ row }) => {
-        const type = (row.getValue("accountType") as string) || "Personal";
+        const type = (row.getValue("account_type") as string) || "Personal";
         const getTypeClass = (type: string) => {
           switch (type.toLowerCase()) {
             case "business":
@@ -375,13 +401,13 @@ const Accounts = () => {
       accessorKey: "sharedAccounts",
       header: "Shared With",
       cell: ({ row }) => {
-        const sharedWith = row.getValue("sharedAccounts") as string[];
+        const sharedWith = row.getValue("shared_with") as string[];
 
         return (
           <div className="text-sm text-gray-500">
-            {sharedWith.length > 0 ? (
+            {sharedWith?.length > 0 ? (
               <span className="inline-block px-3 py-1 text-xs font-medium bg-blue-100 text-blue-800 border border-blue-200 rounded">
-                {sharedWith.length} user{sharedWith.length !== 1 ? "s" : ""}
+                {sharedWith?.length} user{sharedWith?.length !== 1 ? "s" : ""}
               </span>
             ) : (
               <span className="inline-block px-3 py-1 text-xs font-medium bg-gray-100 text-gray-500 border border-gray-200 rounded">
@@ -408,6 +434,27 @@ const Accounts = () => {
         <div className="header-left">
           <h1>Accounts</h1>
           <p>Manage user accounts and sharing permissions</p>
+        </div>
+        <div className="header-right">
+          <button className="refresh-btn" onClick={handleRefreshData}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
+              <path d="M21 3v5h-5" />
+              <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
+              <path d="M3 21v-5h5" />
+            </svg>
+            Refresh
+          </button>
         </div>
         {/* <div className="header-actions">
           <button
@@ -464,11 +511,10 @@ const Accounts = () => {
                   setShowAddModal(false);
                   setEditingAccount(null);
                   setFormData({
-                    name: "",
-                    accountId: "",
-                    email: "",
-                    description: "",
-                    accountType: "Personal",
+                    account_name: "",
+                    account_email: "",
+                    // account_description: "",
+                    account_type: "personal" as AccountType,
                     status: "active",
                   });
                 }}
@@ -481,9 +527,9 @@ const Accounts = () => {
                 <label>Name</label>
                 <input
                   type="text"
-                  value={formData.name}
+                  value={formData.account_name}
                   onChange={(e) =>
-                    setFormData({ ...formData, name: e.target.value })
+                    setFormData({ ...formData, account_name: e.target.value })
                   }
                   placeholder="Enter account name"
                 />
@@ -510,30 +556,34 @@ const Accounts = () => {
                   placeholder="Enter account email"
                 />
               </div> */}
-              <div className="form-group">
+              {/* <div className="form-group">
                 <label>Description</label>
                 <textarea
-                  value={formData.description}
-                  onChange={(e) =>
-                    setFormData({ ...formData, description: e.target.value })
-                  }
-                  placeholder="Enter account description"
-                />
-              </div>
-              <div className="form-group">
-                <label>Account Type</label>
-                <select
-                  value={formData.accountType}
+                  value={formData.account_description}
                   onChange={(e) =>
                     setFormData({
                       ...formData,
-                      accountType: e.target.value as AccountFormData["accountType"],
+                      account_description: e.target.value,
+                    })
+                  }
+                  placeholder="Enter account description"
+                />
+              </div> */}
+              <div className="form-group">
+                <label>Account Type</label>
+                <select
+                  value={formData.account_type}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      account_type: e.target
+                        .value as AccountFormData["account_type"],
                     })
                   }
                 >
-                  <option value="Personal">Personal</option>
-                  <option value="Business">Business</option>
-                  <option value="Temporary">Temporary</option>
+                  <option value="personal">Personal</option>
+                  <option value="business">Business</option>
+                  <option value="temporary">Temporary</option>
                 </select>
               </div>
               <div className="form-group">
@@ -559,11 +609,10 @@ const Accounts = () => {
                   setShowAddModal(false);
                   setEditingAccount(null);
                   setFormData({
-                    name: "",
-                    accountId: "",
-                    email: "",
-                    description: "",
-                    accountType: "Personal",
+                    account_name: "",
+                    account_email: "",
+                    // account_description: "",
+                    account_type: "personal" as AccountType,
                     status: "active",
                   });
                 }}
@@ -586,9 +635,12 @@ const Accounts = () => {
       {/* Sharing Modal */}
       {showSharingModal && selectedAccount && (
         <div className="modal-overlay">
-          <div className="modal" key={`share-modal-${selectedAccount.id}`}>
+          <div
+            className="modal"
+            key={`share-modal-${selectedAccount.account_id}`}
+          >
             <div className="modal-header">
-              <h2>Share Account: {selectedAccount.name}</h2>
+              <h2>Share Account: {selectedAccount.account_name}</h2>
               <button
                 className="close-btn"
                 onClick={() => {
@@ -605,29 +657,31 @@ const Accounts = () => {
                 <div className="users-list">
                   {availableUsers.map((user) => {
                     const isShared = sharingData.sharedAccounts.includes(
-                      user.id
+                      user.user_id
                     );
-                    console.log(`🔍 Checkbox for ${user.name} (${user.id}):`);
+                    console.log(
+                      `🔍 Checkbox for ${user.user_name} (${user.user_id}):`
+                    );
                     console.log(
                       `  - sharingData.sharedAccounts:`,
                       sharingData.sharedAccounts
                     );
-                    console.log(`  - user.id: ${user.id}`);
+                    console.log(`  - user.id: ${user.user_id}`);
                     console.log(
                       `  - includes check: ${sharingData.sharedAccounts.includes(
-                        user.id
+                        user.user_id
                       )}`
                     );
                     console.log(`  - isShared: ${isShared}`);
                     return (
-                      <label key={user.id} className="user-checkbox">
+                      <label key={user.user_id} className="user-checkbox">
                         <input
                           type="checkbox"
                           checked={isShared}
-                          onChange={() => handleUserToggle(user.id)}
+                          onChange={() => handleUserToggle(user.user_id)}
                         />
                         <span style={{ marginLeft: "8px" }}>
-                          {user.name}{" "}
+                          {user.user_name}{" "}
                           {isShared && (
                             <span
                               style={{ color: "green", fontWeight: "bold" }}
@@ -664,9 +718,9 @@ const Accounts = () => {
                         {sharingData.sharedAccounts
                           .map((userId) => {
                             const user = availableUsers.find(
-                              (u) => u.id === userId
+                              (u) => u.user_id === userId
                             );
-                            return user ? user.name : userId;
+                            return user ? user.user_name : userId;
                           })
                           .join(", ")}
                       </div>

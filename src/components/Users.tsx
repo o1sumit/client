@@ -206,6 +206,38 @@ const Users = () => {
     }
   };
 
+  const handleRefreshData = async () => {
+    try {
+      toast.loading("Refreshing data...");
+
+      const response = await usersAPI.getAll();
+      const apiResponse = response.data as ApiResponse<User[]>;
+      const usersData = apiResponse.success && apiResponse.data
+        ? apiResponse.data
+        : (response.data as unknown as User[]);
+
+      const mappedUsers = (usersData || []).map((user: any) => ({
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        role: user?.account?.type || user.role,
+        status: user?.account?.status || user.status,
+        accountId: user.accountId || "default-account",
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+      }));
+
+      setUsers(mappedUsers);
+
+      toast.dismiss();
+      toast.success("Data refreshed successfully!");
+    } catch (error) {
+      console.error("Failed to refresh data:", error);
+      toast.dismiss();
+      toast.error("Failed to refresh data");
+    }
+  };
+
   const columns: ColumnDef<User>[] = [
     {
       accessorKey: "username",
@@ -275,6 +307,27 @@ const Users = () => {
         <div className="header-left">
           <h1>Users</h1>
           <p>Manage system users and their roles</p>
+        </div>
+        <div className="header-right">
+          <button className="refresh-btn" onClick={handleRefreshData}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
+              <path d="M21 3v5h-5" />
+              <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
+              <path d="M3 21v-5h5" />
+            </svg>
+            Refresh
+          </button>
         </div>
       </div>
 

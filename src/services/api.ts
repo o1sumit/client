@@ -4,7 +4,7 @@ import type {
   ApiResponse,
   AuthResponse,
   ProfileResponse,
-  VerifyResponse
+  VerifyResponse,
 } from "../types/api";
 import type {
   Account,
@@ -15,19 +15,29 @@ import type {
   Application,
   Permission,
   Rights,
-  User
+  User,
 } from "../types/entities";
 
 // Re-export types for backward compatibility
 export type {
   ApiResponse,
-  AuthResponse, LegacyAuthResponse,
+  AuthResponse,
+  LegacyAuthResponse,
   LegacyProfileResponse,
-  LegacyVerifyResponse, ProfileResponse,
-  VerifyResponse
+  LegacyVerifyResponse,
+  ProfileResponse,
+  VerifyResponse,
 } from "../types/api";
 export type {
-  Account, AccountSharing, AdminPermission, AdminRole, AdminUser, Application, Permission, Rights, User
+  Account,
+  AccountSharing,
+  AdminPermission,
+  AdminRole,
+  AdminUser,
+  Application,
+  Permission,
+  Rights,
+  User,
 } from "../types/entities";
 
 // Create axios instance with dynamic base URL from configuration
@@ -39,7 +49,6 @@ const api = axios.create({
   },
   timeout: 10000, // 10 second timeout
 });
-
 
 // Request interceptor to add auth token
 api.interceptors.request.use(
@@ -55,6 +64,11 @@ api.interceptors.request.use(
   },
   (error) => {
     console.error("API Request Error:", error);
+    if (error.response?.status === 401) {
+      localStorage.clear();
+      sessionStorage.clear();
+      window.location.href = "/login";
+    }
     return Promise.reject(error);
   }
 );
@@ -72,8 +86,8 @@ api.interceptors.response.use(
       error.response?.data
     );
     if (error.response?.status === 401) {
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
+      localStorage.clear();
+      sessionStorage.clear();
       window.location.href = "/login";
     }
     return Promise.reject(error);
@@ -83,7 +97,7 @@ api.interceptors.response.use(
 // Auth API - Uses centralized configuration
 export const authAPI = {
   login: (credentials: { email: string; password: string }) =>
-    api.post<AuthResponse>("/auth/admin/login", credentials),
+    api.post<AuthResponse>("/login", credentials),
   register: (userData: {
     username: string;
     email: string;
@@ -259,14 +273,14 @@ export const adminManagementAPI = {
   getAll: (params?: {
     search?: string;
     role?: AdminRole;
-    status?: 'active' | 'inactive';
+    status?: "active" | "inactive";
     page?: number;
     limit?: number;
   }) => api.get<ApiResponse<AdminUser[]>>("/admin-management", { params }),
-  
-  getById: (id: string) => 
+
+  getById: (id: string) =>
     api.get<ApiResponse<AdminUser>>(`/admin-management/${id}`),
-  
+
   create: (data: {
     username: string;
     email: string;
@@ -276,28 +290,29 @@ export const adminManagementAPI = {
     permissions: string[];
     password: string;
   }) => api.post<ApiResponse<AdminUser>>("/admin-management", data),
-  
-  update: (id: string, data: {
-    username?: string;
-    email?: string;
-    firstName?: string;
-    lastName?: string;
-    role?: AdminRole;
-    permissions?: string[];
-    status?: 'active' | 'inactive';
-  }) => api.put<ApiResponse<AdminUser>>(`/admin-management/${id}`, data),
-  
-  toggleStatus: (id: string) => 
+
+  update: (
+    id: string,
+    data: {
+      username?: string;
+      email?: string;
+      firstName?: string;
+      lastName?: string;
+      role?: AdminRole;
+      permissions?: string[];
+      status?: "active" | "inactive";
+    }
+  ) => api.put<ApiResponse<AdminUser>>(`/admin-management/${id}`, data),
+
+  toggleStatus: (id: string) =>
     api.patch<ApiResponse<AdminUser>>(`/admin-management/${id}/toggle-status`),
-  
-  delete: (id: string) => 
-    api.delete<ApiResponse>(`/admin-management/${id}`),
-  
-  getPermissions: () => 
+
+  delete: (id: string) => api.delete<ApiResponse>(`/admin-management/${id}`),
+
+  getPermissions: () =>
     api.get<ApiResponse<AdminPermission[]>>("/admin-management/permissions"),
-  
-  getRoles: () => 
-    api.get<ApiResponse<AdminRole[]>>("/admin-management/roles")
+
+  getRoles: () => api.get<ApiResponse<AdminRole[]>>("/admin-management/roles"),
 };
 
 // Health check - Uses centralized configuration

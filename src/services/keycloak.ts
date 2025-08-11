@@ -43,4 +43,3 @@ if (import.meta.env.DEV) {
 }
 
 export { defaultInitOptions, keycloak };
-

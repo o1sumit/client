@@ -104,7 +104,9 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
           {canManageAdmins() && (
             <Link
               to="/manage-admin"
-              className={`nav-item ${isActive("/manage-admin") ? "active" : ""}`}
+              className={`nav-item ${
+                isActive("/manage-admin") ? "active" : ""
+              }`}
             >
               <UserCog size={18} />
               <span>Manage Admin</span>

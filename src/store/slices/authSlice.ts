@@ -12,7 +12,7 @@ import type {
 
 // Types
 interface User {
-  id: string;
+  user_id: string;
   username?: string;
   email: string;
   role: "admin" | "user" | "manager" | "sub_admin" | "super_admin";
@@ -21,7 +21,7 @@ interface User {
 }
 
 interface AuthState {
-  user: User | null;
+  user: any;
   token: string | null;
   isAuthenticated: boolean;
   loading: boolean;
@@ -68,7 +68,7 @@ const isLegacyProfileResponse = (data: any): data is LegacyProfileResponse => {
 
 // Async thunks
 export const login = createAsyncThunk(
-  "auth/login",
+  "/login",
   async (credentials: LoginCredentials, { rejectWithValue }) => {
     try {
       const response = await authAPI.login(credentials);
@@ -122,7 +122,7 @@ export const logout = createAsyncThunk(
   "auth/logout",
   async (_, { rejectWithValue }) => {
     try {
-      await authAPI.logout();
+      // await authAPI.logout();
       localStorage.removeItem("token");
       localStorage.removeItem("user");
       return null;
@@ -208,6 +208,12 @@ const authSlice = createSlice({
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.loading = action.payload;
     },
+    setUser: (state, action: PayloadAction<any>) => {
+      state.user = action.payload;
+      state.token = action.payload?.access_token;
+      state.isAuthenticated = true;
+      state.error = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -218,7 +224,7 @@ const authSlice = createSlice({
       })
       .addCase(login.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload.user;
+        state.user = action.payload;
         state.token = action.payload.token;
         state.isAuthenticated = true;
         state.error = null;
@@ -293,5 +299,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { clearError, setLoading } = authSlice.actions;
+export const { clearError, setLoading, setUser } = authSlice.actions;
 export default authSlice.reducer;

@@ -4,7 +4,12 @@ import { toast } from "react-hot-toast";
 import { useSelector } from "react-redux";
 import { accountsAPI, applicationsAPI, rightsAPI } from "../services/api";
 import type { RootState } from "../store";
-import type { Rights, Application, Account, Permission } from "../types/entities";
+import type {
+  Rights,
+  Application,
+  Account,
+  Permission,
+} from "../types/entities";
 import type { RightsFormData } from "../types/forms";
 import type { ApiResponse } from "../types/api";
 import DataTable from "./DataTable";
@@ -23,10 +28,10 @@ const RightsComponent = () => {
   const [loadingAccounts, setLoadingAccounts] = useState(false);
 
   const [formData, setFormData] = useState<RightsFormData>({
-    applicationId: "",
-    accountId: "",
-    permissions: [],
-    expiresAt: "",
+    application_id: "",
+    account_id: "",
+    rights_code: "",
+    //    expires_on: "",
   });
 
   // Load applications from API
@@ -45,9 +50,10 @@ const RightsComponent = () => {
         console.log("Applications API response:", response);
         // Handle new API response format: { success: true, data: [...], message: "..." }
         const apiResponse = response.data as ApiResponse<Application[]>;
-        const applicationsData = apiResponse.success && apiResponse.data
-          ? apiResponse.data
-          : (response.data as unknown as Application[]);
+        const applicationsData =
+          apiResponse.success && apiResponse.data
+            ? apiResponse.data
+            : (response.data as unknown as Application[]);
         setAvailableApplications(applicationsData || []);
         console.log("Applications loaded:", applicationsData);
       } catch (error: any) {
@@ -56,9 +62,30 @@ const RightsComponent = () => {
         toast.error("Failed to load applications");
         // Fallback to mock data if API fails
         setAvailableApplications([
-          { id: "app-001", name: "APP-X", applicationId: "app-x", status: "active", createdAt: "2024-01-15T10:00:00Z", updatedAt: "2024-01-15T10:00:00Z" },
-          { id: "app-002", name: "APP-Y", applicationId: "app-y", status: "active", createdAt: "2024-01-16T10:00:00Z", updatedAt: "2024-01-16T10:00:00Z" },
-          { id: "app-003", name: "APP-Z", applicationId: "app-z", status: "active", createdAt: "2024-01-17T10:00:00Z", updatedAt: "2024-01-17T10:00:00Z" },
+          {
+            application_id: "app-001",
+            application_name: "APP-X",
+            client_secret: "app-x",
+            version: "1.0.0",
+            created_on: "2024-01-15T10:00:00Z",
+            updated_on: "2024-01-15T10:00:00Z",
+          },
+          {
+            application_id: "app-002",
+            application_name: "APP-Y",
+            client_secret: "app-y",
+            version: "1.0.0",
+            created_on: "2024-01-16T10:00:00Z",
+            updated_on: "2024-01-16T10:00:00Z",
+          },
+          {
+            application_id: "app-003",
+            application_name: "APP-Z",
+            client_secret: "app-z",
+            version: "1.0.0",
+            created_on: "2024-01-17T10:00:00Z",
+            updated_on: "2024-01-17T10:00:00Z",
+          },
         ]);
       } finally {
         setLoadingApplications(false);
@@ -82,18 +109,40 @@ const RightsComponent = () => {
         const response = await accountsAPI.getAll();
         // Handle new API response format: { success: true, data: [...], message: "..." }
         const apiResponse = response.data as ApiResponse<Account[]>;
-        const accountsData = apiResponse.success && apiResponse.data
-          ? apiResponse.data
-          : (response.data as unknown as Account[]);
+        const accountsData =
+          apiResponse.success && apiResponse.data
+            ? apiResponse.data
+            : (response.data as unknown as Account[]);
         setAvailableAccounts(accountsData || []);
       } catch (error: any) {
         console.error("Failed to load accounts:", error);
         toast.error("Failed to load accounts");
         // Fallback to mock data if API fails
         setAvailableAccounts([
-          { id: "acc-001", name: "John Doe", accountId: "john-doe-001", accountType: "Personal", status: "active", sharedAccounts: [], createdAt: "2024-01-15T10:00:00Z", updatedAt: "2024-01-15T10:00:00Z" },
-          { id: "acc-002", name: "Jane Smith", accountId: "jane-smith-001", accountType: "Personal", status: "active", sharedAccounts: [], createdAt: "2024-01-16T10:00:00Z", updatedAt: "2024-01-16T10:00:00Z" },
-          { id: "acc-003", name: "Bob Johnson", accountId: "bob-johnson-001", accountType: "Personal", status: "active", sharedAccounts: [], createdAt: "2024-01-17T10:00:00Z", updatedAt: "2024-01-17T10:00:00Z" },
+          {
+            account_id: "john-doe-001",
+            account_name: "Personal",
+            account_type: "Personal",
+            status: "active",
+            created_on: "2024-01-15T10:00:00Z",
+            updated_on: "2024-01-15T10:00:00Z",
+          },
+          {
+            account_id: "jane-smith-001",
+            account_name: "Personal",
+            account_type: "Personal",
+            status: "active",
+            created_on: "2024-01-16T10:00:00Z",
+            updated_on: "2024-01-16T10:00:00Z",
+          },
+          {
+            account_id: "bob-johnson-001",
+            account_name: "Personal",
+            account_type: "Personal",
+            status: "active",
+            created_on: "2024-01-17T10:00:00Z",
+            updated_on: "2024-01-17T10:00:00Z",
+          },
         ]);
       } finally {
         setLoadingAccounts(false);
@@ -117,27 +166,29 @@ const RightsComponent = () => {
         const response = await rightsAPI.getAll();
         // Handle new API response format: { success: true, data: [...], message: "..." }
         const apiResponse = response.data as ApiResponse<Rights[]>;
-        const rightsData = apiResponse.success && apiResponse.data
-          ? apiResponse.data
-          : (response.data as unknown as Rights[]);
-        
+        const rightsData =
+          apiResponse.success && apiResponse.data
+            ? apiResponse.data
+            : (response.data as unknown as Rights[]);
+
         // Parse permissions JSON string and map to expected format
-        const mappedRights = (rightsData || []).map((right: any) => ({
-          id: right.id,
-          applicationId: right.applicationId,
-          applicationName: right.application?.name || right.applicationName,
-          accountId: right.accountId,
-          accountName: right.account?.name || right.accountName,
-          rightsCode: right.rightsCode || "",
-          permissions:
-            typeof right.permissions === "string"
-              ? JSON.parse(right.permissions)
-              : right.permissions,
-          expiresAt: right.expiresAt,
-          status: right.status,
-          createdAt: right.createdAt,
-          updatedAt: right.updatedAt,
-        } as Rights));
+        const mappedRights = (rightsData || []).map(
+          (right: any) =>
+            ({
+              rights_id: right.rights_id,
+              application_id: right.application_id,
+              application_name:
+                right.application?.application_name || right.application_name,
+              account_id: right.account_id,
+              account_name: right.account?.account_name || right.account_name,
+              rights_code: right.rights_code || "",
+              expires_on: right.expires_on,
+              granted_by: right.granted_by,
+              // status: right.status,
+              created_on: right.created_on,
+              updated_on: right.updated_on,
+            } as Rights)
+        );
 
         setRights(mappedRights);
       } catch (error: any) {
@@ -146,43 +197,40 @@ const RightsComponent = () => {
         // Fallback to mock data if API fails
         const mockRights: Rights[] = [
           {
-            id: "right-001",
-            applicationId: "app-001",
-            applicationName: "APP-X",
-            accountId: "acc-001",
-            accountName: "John Doe",
-            rightsCode: "jwt-token-001",
-            permissions: ["read", "write"],
-            expiresAt: "2024-12-31T23:59:59Z",
-            status: "active",
-            createdAt: "2024-01-15T10:00:00Z",
-            updatedAt: "2024-01-15T10:00:00Z",
+            rights_id: "right-001",
+            application_id: "app-001",
+            application_name: "APP-X",
+            account_id: "acc-001",
+            account_name: "John Doe",
+            rights_code: "jwt-token-001",
+            expires_on: "2024-12-31T23:59:59Z",
+            // status: "active",
+            created_on: "2024-01-15T10:00:00Z",
+            updated_on: "2024-01-15T10:00:00Z",
           },
           {
-            id: "right-002",
-            applicationId: "app-002",
-            applicationName: "APP-Y",
-            accountId: "acc-002",
-            accountName: "Jane Smith",
-            rightsCode: "jwt-token-002",
-            permissions: ["read", "write", "delete"],
-            expiresAt: "2024-06-30T23:59:59Z",
-            status: "active",
-            createdAt: "2024-01-16T10:00:00Z",
-            updatedAt: "2024-01-16T10:00:00Z",
+            rights_id: "right-002",
+            application_id: "app-002",
+            application_name: "APP-Y",
+            account_id: "acc-002",
+            account_name: "Jane Smith",
+            rights_code: "jwt-token-002",
+            expires_on: "2024-06-30T23:59:59Z",
+            // status: "active",
+            created_on: "2024-01-16T10:00:00Z",
+            updated_on: "2024-01-16T10:00:00Z",
           },
           {
-            id: "right-003",
-            applicationId: "app-003",
-            applicationName: "APP-Z",
-            accountId: "acc-003",
-            accountName: "Bob Johnson",
-            rightsCode: "jwt-token-003",
-            permissions: ["read"],
-            expiresAt: undefined,
-            status: "active",
-            createdAt: "2024-01-17T10:00:00Z",
-            updatedAt: "2024-01-17T10:00:00Z",
+            rights_id: "right-003",
+            application_id: "app-003",
+            application_name: "APP-Z",
+            account_id: "acc-003",
+            account_name: "Bob Johnson",
+            rights_code: "jwt-token-003",
+            expires_on: undefined,
+            // status: "active",
+            created_on: "2024-01-17T10:00:00Z",
+            updated_on: "2024-01-17T10:00:00Z",
           },
         ];
         setRights(mockRights);
@@ -195,35 +243,32 @@ const RightsComponent = () => {
   }, [isAuthenticated]);
 
   const handleAddRight = async () => {
-    if (
-      !formData.applicationId ||
-      !formData.accountId ||
-      formData.permissions.length === 0
-    ) {
-      toast.error(
-        "Application, Account, and at least one permission are required!"
-      );
+    if (!formData.application_id || !formData.account_id) {
+      toast.error("Application, Account, and Rights Code are required!");
       return;
     }
 
     try {
-      const response = await rightsAPI.create(formData);
+      const payload = {
+        application_id: formData.application_id,
+        account_id: formData.account_id,
+        rights_code: formData.rights_code,
+        //  expires_on: formData.expires_on,
+      };
+      const response = await rightsAPI.create(payload);
       const apiResponse = response.data as ApiResponse<Rights>;
-      const newRight = apiResponse.success && apiResponse.data
-        ? apiResponse.data
-        : (response.data as unknown as Rights);
-      
+      const newRight =
+        apiResponse.success && apiResponse.data
+          ? apiResponse.data
+          : (response.data as unknown as Rights);
+
       if (newRight) {
-        // Parse permissions if it's a JSON string
-        if (typeof newRight.permissions === "string") {
-          newRight.permissions = JSON.parse(newRight.permissions) as Permission[];
-        }
         setRights([...rights, newRight]);
         setFormData({
-          applicationId: "",
-          accountId: "",
-          permissions: [],
-          expiresAt: "",
+          application_id: "",
+          account_id: "",
+          rights_code: "",
+          //  expires_on: "",
         });
         setShowAddModal(false);
         toast.success("Right added successfully!");
@@ -237,21 +282,16 @@ const RightsComponent = () => {
   const handleEditRight = async (right: Rights) => {
     setEditingRight(right);
     setFormData({
-      applicationId: right.applicationId,
-      accountId: right.accountId,
-      permissions: right.permissions,
-      expiresAt: right.expiresAt ? right.expiresAt.split("T")[0] : "",
+      application_id: right.application_id,
+      account_id: right.account_id,
+      rights_code: right.rights_code,
+      //expires_on: right.expires_on ? right.expires_on.split("T")[0] : "",
     });
     setShowAddModal(true);
   };
 
   const handleUpdateRight = async () => {
-    if (
-      !editingRight ||
-      !formData.applicationId ||
-      !formData.accountId ||
-      formData.permissions.length === 0
-    ) {
+    if (!editingRight || !formData.application_id || !formData.account_id) {
       toast.error(
         "Application, Account, and at least one permission are required!"
       );
@@ -259,43 +299,47 @@ const RightsComponent = () => {
     }
 
     try {
-      const response = await rightsAPI.update(editingRight.id, formData);
+      const response = await rightsAPI.update(editingRight.rights_id, formData);
       const apiResponse = response.data as ApiResponse<Rights>;
-      const updatedRight = apiResponse.success && apiResponse.data
-        ? apiResponse.data
-        : (response.data as unknown as Rights);
-      
+      const updatedRight =
+        apiResponse.success && apiResponse.data
+          ? apiResponse.data
+          : (response.data as unknown as Rights);
+
       if (updatedRight) {
         // Parse permissions if it's a JSON string
-        if (typeof updatedRight.permissions === "string") {
-          updatedRight.permissions = JSON.parse(updatedRight.permissions) as Permission[];
-        }
-        
+        // if (typeof updatedRight.permissions === "string") {
+        //   updatedRight.permissions = JSON.parse(
+        //     updatedRight.permissions
+        //   ) as Permission[];
+        // }
+
         // Ensure updatedRight has all required properties for Rights
         const updatedRightForTable: Rights = {
-          id: updatedRight.id,
-          applicationId: updatedRight.applicationId,
-          applicationName: updatedRight.applicationName,
-          accountId: updatedRight.accountId,
-          accountName: updatedRight.accountName,
-          rightsCode: updatedRight.rightsCode,
-          permissions: updatedRight.permissions,
-          expiresAt: updatedRight.expiresAt,
-          status: updatedRight.status,
-          createdAt: updatedRight.createdAt,
-          updatedAt: updatedRight.updatedAt,
+          rights_id: updatedRight.rights_id,
+          application_id: updatedRight.application_id,
+          application_name: updatedRight.application_name,
+          account_id: updatedRight.account_id,
+          account_name: updatedRight.account_name,
+          rights_code: updatedRight.rights_code,
+          // expires_on: updatedRight.expires_on,
+          // status: updatedRight.status,
+          created_on: updatedRight.created_on,
+          updated_on: updatedRight.updated_on,
         };
-        
+
         setRights(
           rights.map((right) =>
-            right.id === editingRight.id ? updatedRightForTable : right
+            right.rights_id === editingRight.rights_id
+              ? updatedRightForTable
+              : right
           )
         );
         setFormData({
-          applicationId: "",
-          accountId: "",
-          permissions: [],
-          expiresAt: "",
+          application_id: "",
+          account_id: "",
+          rights_code: "",
+          //  expires_on: "",
         });
         setEditingRight(null);
         setShowAddModal(false);
@@ -310,15 +354,15 @@ const RightsComponent = () => {
   const handleDeleteRight = async (right: Rights) => {
     if (
       !confirm(
-        `Are you sure you want to delete this right for ${right.applicationName}?`
+        `Are you sure you want to delete this right for ${right.application_name}?`
       )
     ) {
       return;
     }
 
     try {
-      await rightsAPI.delete(right.id);
-      setRights(rights.filter((r) => r.id !== right.id));
+      await rightsAPI.delete(right.rights_id);
+      setRights(rights.filter((r) => r.rights_id !== right.rights_id));
       toast.success("Right deleted successfully!");
     } catch (error) {
       console.error("Failed to delete right:", error);
@@ -329,9 +373,7 @@ const RightsComponent = () => {
   const handlePermissionToggle = (permission: Permission) => {
     setFormData((prev) => ({
       ...prev,
-      permissions: prev.permissions.includes(permission)
-        ? prev.permissions.filter((p) => p !== permission)
-        : [...prev.permissions, permission],
+      rights_code: prev.rights_code,
     }));
   };
 
@@ -341,43 +383,51 @@ const RightsComponent = () => {
 
       // Refresh applications
       const applicationsResponse = await applicationsAPI.getAll();
-      const applicationsApiResponse = applicationsResponse.data as ApiResponse<Application[]>;
-      const applicationsData = applicationsApiResponse.success && applicationsApiResponse.data
-        ? applicationsApiResponse.data
-        : (applicationsResponse.data as unknown as Application[]);
+      const applicationsApiResponse = applicationsResponse.data as ApiResponse<
+        Application[]
+      >;
+      const applicationsData =
+        applicationsApiResponse.success && applicationsApiResponse.data
+          ? applicationsApiResponse.data
+          : (applicationsResponse.data as unknown as Application[]);
       setAvailableApplications(applicationsData || []);
 
       // Refresh accounts
       const accountsResponse = await accountsAPI.getAll();
-      const accountsApiResponse = accountsResponse.data as ApiResponse<Account[]>;
-      const accountsData = accountsApiResponse.success && accountsApiResponse.data
-        ? accountsApiResponse.data
-        : (accountsResponse.data as unknown as Account[]);
+      const accountsApiResponse = accountsResponse.data as ApiResponse<
+        Account[]
+      >;
+      const accountsData =
+        accountsApiResponse.success && accountsApiResponse.data
+          ? accountsApiResponse.data
+          : (accountsResponse.data as unknown as Account[]);
       setAvailableAccounts(accountsData || []);
 
       // Refresh rights
       const rightsResponse = await rightsAPI.getAll();
       const rightsApiResponse = rightsResponse.data as ApiResponse<Rights[]>;
-      const rightsData = rightsApiResponse.success && rightsApiResponse.data
-        ? rightsApiResponse.data
-        : (rightsResponse.data as unknown as Rights[]);
-      
-      const mappedRights = (rightsData || []).map((right: any) => ({
-        id: right.id,
-        applicationId: right.applicationId,
-        applicationName: right.application?.name || right.applicationName,
-        accountId: right.accountId,
-        accountName: right.account?.name || right.accountName,
-        rightsCode: right.rightsCode || "",
-        permissions:
-          typeof right.permissions === "string"
-            ? JSON.parse(right.permissions)
-            : right.permissions,
-        expiresAt: right.expiresAt,
-        status: right.status,
-        createdAt: right.createdAt,
-        updatedAt: right.updatedAt,
-      } as Rights));
+      const rightsData =
+        rightsApiResponse.success && rightsApiResponse.data
+          ? rightsApiResponse.data
+          : (rightsResponse.data as unknown as Rights[]);
+
+      const mappedRights = (rightsData || []).map(
+        (right: any) =>
+          ({
+            rights_id: right.rights_id,
+            application_id: right.application_id,
+            application_name:
+              right.application?.application_name || right.application_name,
+            account_id: right.account_id,
+            account_name: right.account?.account_name || right.account_name,
+            rights_code: right.rights_code || "",
+            // expires_on: right.expires_on,
+            granted_by: right.granted_by,
+            // status: right.status,
+            created_on: right.created_on,
+            updated_on: right.updated_on,
+          } as unknown as Rights)
+      );
       setRights(mappedRights);
 
       toast.dismiss();
@@ -391,26 +441,26 @@ const RightsComponent = () => {
 
   const columns: ColumnDef<Rights>[] = [
     {
-      accessorKey: "applicationName",
-      header: "Application",
+      accessorKey: "application_name",
+      header: "Application Name",
       cell: ({ row }) => (
         console.log("Row data:", row),
-        (<div className="font-medium">{row.getValue("applicationName")}</div>)
+        (<div className="font-medium">{row.getValue("application_name")}</div>)
       ),
     },
     {
-      accessorKey: "accountName",
-      header: "Account",
+      accessorKey: "account_name",
+      header: "Account Name",
       cell: ({ row }) => (
-        <div className="font-medium">{row.getValue("accountName")}</div>
+        <div className="font-medium">{row.getValue("account_name")}</div>
       ),
     },
     {
-      accessorKey: "permissions",
-      header: "Permissions",
+      accessorKey: "rights_code",
+      header: "Rights Code",
       cell: ({ row }) => {
-        console.log("Permissions:", row);
-        const permissions = row.getValue("permissions") as Permission[];
+        console.log("Rights Code:", row);
+        const rightsCode = row.getValue("rights_code") as string;
         const getPermissionClass = (permission: Permission) => {
           switch (permission.toLowerCase()) {
             case "read":
@@ -427,33 +477,58 @@ const RightsComponent = () => {
         };
         return (
           <div className="flex flex-wrap gap-1">
-            {permissions.map((permission) => (
-              <span key={permission} className={getPermissionClass(permission)}>
-                {permission}
-              </span>
-            ))}
+            <span
+              key={rightsCode}
+              className={getPermissionClass(rightsCode as Permission)}
+            >
+              {rightsCode}
+            </span>
           </div>
         );
       },
     },
+    // {
+    //   accessorKey: "expires_on",
+    //   header: "Expires On",
+    //   cell: ({ row }) => {
+    //     const expiresOn = row.getValue("expires_on") as string | undefined;
+    //     return (
+    //       <div className="text-sm text-gray-500">
+    //         {expiresOn ? new Date(expiresOn).toLocaleDateString() : "Never"}
+    //       </div>
+    //     );
+    //   },
+    // },
     {
-      accessorKey: "expiresAt",
-      header: "Expires",
+      accessorKey: "granted_by",
+      header: "Granted By",
       cell: ({ row }) => {
-        const expiresAt = row.getValue("expiresAt") as string | undefined;
-        return (
-          <div className="text-sm text-gray-500">
-            {expiresAt ? new Date(expiresAt).toLocaleDateString() : "Never"}
-          </div>
-        );
-      },
-    },
-    {
-      accessorKey: "status",
-      header: "Status",
-      cell: ({ row }) => {
-        const status = row.getValue("status") as string;
+        const status = row.getValue("granted_by") as string;
         return <span className={`status-badge ${status}`}>{status}</span>;
+      },
+    },
+    {
+      accessorKey: "updated_on",
+      header: "Updated On",
+      cell: ({ row }) => {
+        const updatedOn = row.getValue("updated_on") as string;
+        return (
+          <span className="text-sm text-gray-500">
+            {updatedOn ? new Date(updatedOn).toLocaleDateString() : "Never"}
+          </span>
+        );
+      },
+    },
+    {
+      accessorKey: "created_on",
+      header: "Created On",
+      cell: ({ row }) => {
+        const createdOn = row.getValue("created_on") as string;
+        return (
+          <span className="text-sm text-gray-500">
+            {createdOn ? new Date(createdOn).toLocaleDateString() : "Never"}
+          </span>
+        );
       },
     },
   ];
@@ -518,10 +593,10 @@ const RightsComponent = () => {
                   setShowAddModal(false);
                   setEditingRight(null);
                   setFormData({
-                    applicationId: "",
-                    accountId: "",
-                    permissions: [],
-                    expiresAt: "",
+                    application_id: "",
+                    account_id: "",
+                    rights_code: "",
+                    //expires_on: "",
                   });
                 }}
               >
@@ -532,9 +607,9 @@ const RightsComponent = () => {
               <div className="form-group">
                 <label>Application *</label>
                 <select
-                  value={formData.applicationId}
+                  value={formData.application_id}
                   onChange={(e) =>
-                    setFormData({ ...formData, applicationId: e.target.value })
+                    setFormData({ ...formData, application_id: e.target.value })
                   }
                   disabled={loadingApplications}
                 >
@@ -544,8 +619,8 @@ const RightsComponent = () => {
                       : "Select Application"}
                   </option>
                   {availableApplications.map((app) => (
-                    <option key={app.id} value={app.id}>
-                      {app.name}
+                    <option key={app.application_id} value={app.application_id}>
+                      {app.application_name}
                     </option>
                   ))}
                 </select>
@@ -558,9 +633,9 @@ const RightsComponent = () => {
               <div className="form-group">
                 <label>Account *</label>
                 <select
-                  value={formData.accountId}
+                  value={formData.account_id}
                   onChange={(e) =>
-                    setFormData({ ...formData, accountId: e.target.value })
+                    setFormData({ ...formData, account_id: e.target.value })
                   }
                   disabled={loadingAccounts}
                 >
@@ -568,8 +643,8 @@ const RightsComponent = () => {
                     {loadingAccounts ? "Loading accounts..." : "Select Account"}
                   </option>
                   {availableAccounts.map((account) => (
-                    <option key={account.id} value={account.id}>
-                      {account.name}
+                    <option key={account.account_id} value={account.account_id}>
+                      {account.account_name}
                     </option>
                   ))}
                 </select>
@@ -579,31 +654,46 @@ const RightsComponent = () => {
                   </div>
                 )}
               </div>
-              <div className="form-group">
+              {/* <div className="form-group">
                 <label>Permissions *</label>
                 <div className="permissions-grid">
-                  {(["read", "write", "delete", "admin"] as Permission[]).map((permission) => (
-                    <label key={permission} className="permission-checkbox">
-                      <input
-                        type="checkbox"
-                        checked={formData.permissions.includes(permission)}
-                        onChange={() => handlePermissionToggle(permission)}
-                      />
-                      {permission.charAt(0).toUpperCase() + permission.slice(1)}
-                    </label>
-                  ))}
+                  {(["read", "write", "delete", "admin"] as Permission[]).map(
+                    (permission) => (
+                      <label key={permission} className="permission-checkbox">
+                        <input
+                          type="checkbox"
+                          checked={formData.permissions.includes(permission)}
+                          onChange={() => handlePermissionToggle(permission)}
+                        />
+                        {permission.charAt(0).toUpperCase() +
+                          permission.slice(1)}
+                      </label>
+                    )
+                  )}
                 </div>
-              </div>
+              </div> */}
+
               <div className="form-group">
+                <label>Rights Code</label>
+                <textarea
+                  value={formData.rights_code}
+                  onChange={(e) =>
+                    setFormData({ ...formData, rights_code: e.target.value })
+                  }
+                  placeholder="Enter rights code"
+                  rows={10}
+                />
+              </div>
+              {/* <div className="form-group">
                 <label>Expires At</label>
                 <input
                   type="date"
-                  value={formData.expiresAt}
+                  value={formData.expires_on}
                   onChange={(e) =>
-                    setFormData({ ...formData, expiresAt: e.target.value })
+                    setFormData({ ...formData, expires_on: e.target.value })
                   }
                 />
-              </div>
+              </div> */}
             </div>
             <div className="modal-footer">
               <button
@@ -612,10 +702,10 @@ const RightsComponent = () => {
                   setShowAddModal(false);
                   setEditingRight(null);
                   setFormData({
-                    applicationId: "",
-                    accountId: "",
-                    permissions: [],
-                    expiresAt: "",
+                    application_id: "",
+                    account_id: "",
+                    rights_code: "",
+                    //    expires_on: "",
                   });
                 }}
               >

@@ -12,11 +12,10 @@ import type {
 
 // Application form data interface
 export interface ApplicationFormData {
-  name: string;
-  applicationSecret: string;
-  applicationId: string;
-  description?: string;
-  status: ApplicationStatus;
+  application_name: string,
+  client_secret: string,
+  version: string,
+  // status: ApplicationStatus;
 }
 
 // User form data interface
@@ -30,20 +29,19 @@ export interface UserFormData {
 
 // Account form data interface
 export interface AccountFormData {
-  name: string;
-  accountId: string;
-  email?: string;
-  description?: string;
-  accountType: AccountType;
+  account_name: string;
+  account_email: string;
+  // account_description: string;
+  account_type: AccountType;
   status: AccountStatus;
 }
 
 // Rights form data interface
 export interface RightsFormData {
-  applicationId: string;
-  accountId: string;
-  permissions: Permission[];
-  expiresAt?: string;
+  application_id: string;
+  account_id: string;
+  rights_code: string;
+  expires_on?: string;
 }
 
 // Account sharing form data interface

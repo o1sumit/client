@@ -2,12 +2,12 @@ import React from "react";
 import { useAuth } from "react-oidc-context";
 import { Navigate } from "react-router-dom";
 
-interface ProtectedRouteProps {
+interface PublicRouteProps {
   children: React.ReactNode;
 }
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  // const { isAuthenticated, loading } = useSelector((state: RootState) => state.auth);
+const PublicRoute: React.FC<PublicRouteProps> = ({ children }) => {
+  // const { isAuthenticated, loading, user } = useSelector((state: RootState) => state.auth);
   const { isAuthenticated, isLoading } = useAuth();
 
   if (isLoading) {
@@ -18,7 +18,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
     );
   }
 
-  return isAuthenticated ? <>{children}</> : <Navigate to="/login" />;
+  return !isAuthenticated ? <>{children}</> : <Navigate to="/" />;
 };
 
-export default ProtectedRoute;
+export default PublicRoute;
