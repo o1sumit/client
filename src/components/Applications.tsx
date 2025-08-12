@@ -37,42 +37,7 @@ const Applications = () => {
         console.error("Failed to load applications:", error);
         toast.error("Failed to load applications");
         // Fallback to mock data if API fails
-        const mockApplications: Application[] = [
-          {
-            application_id: "app-001",
-            application_name: "APP-X",
-            client_secret: "app-x",
-            version: "1.0.0",
-            // description: "User Management System",
-            // applicationSecret: "app-x-secret",
-            // status: "active",
-            created_on: "2024-01-15T10:00:00Z",
-            updated_on: "2024-01-15T10:00:00Z",
-          },
-          {
-            application_id: "app-002",
-            application_name: "APP-Y",
-            client_secret: "app-y",
-            version: "1.0.0",
-            // description: "Analytics Platform",
-            // applicationSecret: "app-y-secret",
-            // status: "active",
-            created_on: "2024-01-16T10:00:00Z",
-            updated_on: "2024-01-16T10:00:00Z",
-          },
-          {
-            application_id: "app-003",
-            application_name: "APP-Z",
-            client_secret: "app-z",
-            version: "1.0.0",
-            // description: "Communication System",
-            // status: "active",
-            // applicationSecret: "app-z-secret",
-            created_on: "2024-01-17T10:00:00Z",
-            updated_on: "2024-01-17T10:00:00Z",
-          },
-        ];
-        setApplications(mockApplications);
+        setApplications([]);
       } finally {
         setLoading(false);
       }

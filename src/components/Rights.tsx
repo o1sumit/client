@@ -61,32 +61,7 @@ const RightsComponent = () => {
         console.error("Error details:", error.response?.data);
         toast.error("Failed to load applications");
         // Fallback to mock data if API fails
-        setAvailableApplications([
-          {
-            application_id: "app-001",
-            application_name: "APP-X",
-            client_secret: "app-x",
-            version: "1.0.0",
-            created_on: "2024-01-15T10:00:00Z",
-            updated_on: "2024-01-15T10:00:00Z",
-          },
-          {
-            application_id: "app-002",
-            application_name: "APP-Y",
-            client_secret: "app-y",
-            version: "1.0.0",
-            created_on: "2024-01-16T10:00:00Z",
-            updated_on: "2024-01-16T10:00:00Z",
-          },
-          {
-            application_id: "app-003",
-            application_name: "APP-Z",
-            client_secret: "app-z",
-            version: "1.0.0",
-            created_on: "2024-01-17T10:00:00Z",
-            updated_on: "2024-01-17T10:00:00Z",
-          },
-        ]);
+        setAvailableApplications([]);
       } finally {
         setLoadingApplications(false);
       }
@@ -118,32 +93,7 @@ const RightsComponent = () => {
         console.error("Failed to load accounts:", error);
         toast.error("Failed to load accounts");
         // Fallback to mock data if API fails
-        setAvailableAccounts([
-          {
-            account_id: "john-doe-001",
-            account_name: "Personal",
-            account_type: "Personal",
-            status: "active",
-            created_on: "2024-01-15T10:00:00Z",
-            updated_on: "2024-01-15T10:00:00Z",
-          },
-          {
-            account_id: "jane-smith-001",
-            account_name: "Personal",
-            account_type: "Personal",
-            status: "active",
-            created_on: "2024-01-16T10:00:00Z",
-            updated_on: "2024-01-16T10:00:00Z",
-          },
-          {
-            account_id: "bob-johnson-001",
-            account_name: "Personal",
-            account_type: "Personal",
-            status: "active",
-            created_on: "2024-01-17T10:00:00Z",
-            updated_on: "2024-01-17T10:00:00Z",
-          },
-        ]);
+        setAvailableAccounts([]);
       } finally {
         setLoadingAccounts(false);
       }
@@ -195,45 +145,7 @@ const RightsComponent = () => {
         console.error("Failed to load rights:", error);
         toast.error("Failed to load rights");
         // Fallback to mock data if API fails
-        const mockRights: Rights[] = [
-          {
-            rights_id: "right-001",
-            application_id: "app-001",
-            application_name: "APP-X",
-            account_id: "acc-001",
-            account_name: "John Doe",
-            rights_code: "jwt-token-001",
-            expires_on: "2024-12-31T23:59:59Z",
-            // status: "active",
-            created_on: "2024-01-15T10:00:00Z",
-            updated_on: "2024-01-15T10:00:00Z",
-          },
-          {
-            rights_id: "right-002",
-            application_id: "app-002",
-            application_name: "APP-Y",
-            account_id: "acc-002",
-            account_name: "Jane Smith",
-            rights_code: "jwt-token-002",
-            expires_on: "2024-06-30T23:59:59Z",
-            // status: "active",
-            created_on: "2024-01-16T10:00:00Z",
-            updated_on: "2024-01-16T10:00:00Z",
-          },
-          {
-            rights_id: "right-003",
-            application_id: "app-003",
-            application_name: "APP-Z",
-            account_id: "acc-003",
-            account_name: "Bob Johnson",
-            rights_code: "jwt-token-003",
-            expires_on: undefined,
-            // status: "active",
-            created_on: "2024-01-17T10:00:00Z",
-            updated_on: "2024-01-17T10:00:00Z",
-          },
-        ];
-        setRights(mockRights);
+        setRights([]);
       } finally {
         setLoading(false);
       }
@@ -255,15 +167,44 @@ const RightsComponent = () => {
         rights_code: formData.rights_code,
         //  expires_on: formData.expires_on,
       };
-      const response = await rightsAPI.create(payload);
+      const response = await rightsAPI.create(payload as any);
       const apiResponse = response.data as ApiResponse<Rights>;
-      const newRight =
+      const newRightRaw =
         apiResponse.success && apiResponse.data
           ? apiResponse.data
           : (response.data as unknown as Rights);
 
-      if (newRight) {
-        setRights([...rights, newRight]);
+      if (newRightRaw) {
+        const applicationName =
+          (newRightRaw as any).application?.application_name ||
+          (newRightRaw as any).application_name ||
+          availableApplications.find(
+            (a) => a.application_id === formData.application_id
+          )?.application_name ||
+          "";
+        const accountName =
+          (newRightRaw as any).account?.account_name ||
+          (newRightRaw as any).account_name ||
+          availableAccounts.find((a) => a.account_id === formData.account_id)
+            ?.account_name ||
+          "";
+
+        const newRightForTable: Rights = {
+          rights_id: (newRightRaw as any).rights_id || (newRightRaw as any).id,
+          application_id:
+            (newRightRaw as any).application_id || formData.application_id,
+          application_name: applicationName,
+          account_id: (newRightRaw as any).account_id || formData.account_id,
+          account_name: accountName,
+          rights_code: (newRightRaw as any).rights_code || formData.rights_code,
+          // expires_on: (newRightRaw as any).expires_on,
+          created_on:
+            (newRightRaw as any).created_on || new Date().toISOString(),
+          updated_on:
+            (newRightRaw as any).updated_on || new Date().toISOString(),
+        };
+
+        setRights([...rights, newRightForTable]);
         setFormData({
           application_id: "",
           account_id: "",

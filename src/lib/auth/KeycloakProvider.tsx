@@ -1,8 +1,8 @@
+import KeyCloakError from "@components/error/KeyCloakError";
+import { keycloak } from "@services/keycloak";
+import { useEffect, useState, type ReactNode } from "react";
 import { AuthProvider } from "react-oidc-context";
-import { useState, useEffect, type ReactNode } from "react";
 import checkKeycloakEnv from "./checkEnv";
-import KeyCloakError from "../../components/error/KeyCloakError";
-import { keycloak } from "../../services/keycloak";
 
 interface KeycloakProviderProps {
   children: ReactNode;

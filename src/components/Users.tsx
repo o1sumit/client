@@ -29,9 +29,10 @@ const Users = () => {
         const response = await usersAPI.getAll();
         // Handle new API response format: { success: true, data: [...], message: "..." }
         const apiResponse = response.data as ApiResponse<User[]>;
-        const usersData = apiResponse.success && apiResponse.data
-          ? apiResponse.data
-          : (response.data as unknown as User[]);
+        const usersData =
+          apiResponse.success && apiResponse.data
+            ? apiResponse.data
+            : (response.data as unknown as User[]);
 
         // Map to expected format if needed
         const mappedUsers = (usersData || []).map((user: any) => ({
@@ -41,48 +42,15 @@ const Users = () => {
           role: user?.account?.type || user.role,
           status: user?.account?.status || user.status,
           accountId: user.accountId || "default-account",
-          createdAt: user.createdAt,
-          updatedAt: user.updatedAt,
+          created_on: user.created_on,
+          updated_on: user.updated_on,
         }));
 
-        setUsers(mappedUsers);
+        setUsers(mappedUsers as unknown as User[]);
       } catch (error) {
         console.error("Failed to load users:", error);
         toast.error("Failed to load users");
-        // Fallback to mock data if API fails
-        const mockUsers: User[] = [
-          {
-            id: "user-001",
-            username: "admin",
-            email: "admin@app-admin.com",
-            role: "admin",
-            status: "active",
-            accountId: "acc-001",
-            createdAt: "2024-01-15T10:00:00Z",
-            updatedAt: "2024-01-15T10:00:00Z",
-          },
-          {
-            id: "user-002",
-            username: "john_doe",
-            email: "john@example.com",
-            role: "user",
-            status: "active",
-            accountId: "acc-002",
-            createdAt: "2024-01-16T10:00:00Z",
-            updatedAt: "2024-01-16T10:00:00Z",
-          },
-          {
-            id: "user-003",
-            username: "jane_smith",
-            email: "jane@example.com",
-            role: "manager",
-            status: "active",
-            accountId: "acc-003",
-            createdAt: "2024-01-17T10:00:00Z",
-            updatedAt: "2024-01-17T10:00:00Z",
-          },
-        ];
-        setUsers(mockUsers);
+        setUsers([]);
       } finally {
         setLoading(false);
       }
@@ -100,10 +68,11 @@ const Users = () => {
     try {
       const response = await usersAPI.create(formData);
       const apiResponse = response.data as ApiResponse<User>;
-      const newUser = apiResponse.success && apiResponse.data
-        ? apiResponse.data
-        : (response.data as unknown as User);
-      
+      const newUser =
+        apiResponse.success && apiResponse.data
+          ? apiResponse.data
+          : (response.data as unknown as User);
+
       if (newUser) {
         setUsers([...users, newUser]);
         setFormData({
@@ -143,10 +112,11 @@ const Users = () => {
     try {
       const response = await usersAPI.update(editingUser.id, formData);
       const apiResponse = response.data as ApiResponse<User>;
-      const updatedUser = apiResponse.success && apiResponse.data
-        ? apiResponse.data
-        : (response.data as unknown as User);
-      
+      const updatedUser =
+        apiResponse.success && apiResponse.data
+          ? apiResponse.data
+          : (response.data as unknown as User);
+
       if (updatedUser) {
         setUsers(
           users.map((user) => (user.id === editingUser.id ? updatedUser : user))
@@ -192,10 +162,11 @@ const Users = () => {
         status: newStatus,
       });
       const apiResponse = response.data as ApiResponse<User>;
-      const updatedUser = apiResponse.success && apiResponse.data
-        ? apiResponse.data
-        : (response.data as unknown as User);
-      
+      const updatedUser =
+        apiResponse.success && apiResponse.data
+          ? apiResponse.data
+          : (response.data as unknown as User);
+
       if (updatedUser) {
         setUsers(users.map((u) => (u.id === user.id ? updatedUser : u)));
         toast.success(`User ${newStatus} successfully!`);
@@ -212,9 +183,10 @@ const Users = () => {
 
       const response = await usersAPI.getAll();
       const apiResponse = response.data as ApiResponse<User[]>;
-      const usersData = apiResponse.success && apiResponse.data
-        ? apiResponse.data
-        : (response.data as unknown as User[]);
+      const usersData =
+        apiResponse.success && apiResponse.data
+          ? apiResponse.data
+          : (response.data as unknown as User[]);
 
       const mappedUsers = (usersData || []).map((user: any) => ({
         id: user.id,
@@ -223,11 +195,11 @@ const Users = () => {
         role: user?.account?.type || user.role,
         status: user?.account?.status || user.status,
         accountId: user.accountId || "default-account",
-        createdAt: user.createdAt,
-        updatedAt: user.updatedAt,
+        created_on: user.created_on,
+        updated_on: user.updated_on,
       }));
 
-      setUsers(mappedUsers);
+      setUsers(mappedUsers as unknown as User[]);
 
       toast.dismiss();
       toast.success("Data refreshed successfully!");
@@ -243,7 +215,13 @@ const Users = () => {
       accessorKey: "username",
       header: "Username",
       cell: ({ row }) => (
-        <div className="font-medium">{row.getValue("username")}</div>
+        <div className="font-medium">
+          {(() => {
+            const username = row.getValue("username") as string;
+            const atIndex = username.indexOf("@");
+            return atIndex !== -1 ? username.slice(0, atIndex) : username;
+          })()}
+        </div>
       ),
     },
     {
@@ -283,11 +261,11 @@ const Users = () => {
       },
     },
     {
-      accessorKey: "createdAt",
+      accessorKey: "created_on",
       header: "Created",
       cell: ({ row }) => (
         <div className="text-sm text-gray-500">
-          {new Date(row.getValue("createdAt")).toLocaleDateString()}
+          {new Date(row.getValue("created_on")).toLocaleDateString()}
         </div>
       ),
     },
@@ -387,7 +365,7 @@ const Users = () => {
                   placeholder="Enter email"
                 />
               </div>
-              <div className="form-group">
+              {/* <div className="form-group">
                 <label>
                   {editingUser
                     ? "Password (leave blank to keep current)"
@@ -403,7 +381,7 @@ const Users = () => {
                     editingUser ? "Enter new password" : "Enter password"
                   }
                 />
-              </div>
+              </div> */}
               <div className="form-group">
                 <label>Role</label>
                 <select

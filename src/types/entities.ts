@@ -55,6 +55,7 @@ export interface Rights {
   account_name: string;
   rights_code: string;
   expires_on?: string;
+  granted_by?: string;
   // status: RightStatus;
   created_on: string;
   updated_on: string;

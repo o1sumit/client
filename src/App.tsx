@@ -1,3 +1,16 @@
+import Accounts from "@components/Accounts";
+import AdminLayout from "@components/AdminLayout";
+import Applications from "@components/Applications";
+import Login from "@components/Login";
+import ManageAdmin from "@components/ManageAdmin";
+import PermissionRoute from "@components/PermissionRoute";
+import ProtectedRoute from "@components/ProtectedRoute";
+import RightsComponent from "@components/Rights";
+import UnauthorizedAccess from "@components/UnauthorizedAccess";
+import Users from "@components/Users";
+import PublicRoute from "@lib/auth/PublicRoute";
+import { AppDispatch, store } from "@store/index";
+import { setUser } from "@store/slices/authSlice";
 import { useEffect } from "react";
 import { Toaster } from "react-hot-toast";
 import { useAuth } from "react-oidc-context";
@@ -8,21 +21,11 @@ import {
   BrowserRouter as Router,
   Routes,
 } from "react-router-dom";
-import Accounts from "./components/Accounts";
-import AdminLayout from "./components/AdminLayout";
-import Applications from "./components/Applications";
-import Dashboard from "./components/Dashboard";
-import Login from "./components/Login";
-import ManageAdmin from "./components/ManageAdmin";
-import PermissionRoute from "./components/PermissionRoute";
-import ProtectedRoute from "./components/ProtectedRoute";
-import RightsComponent from "./components/Rights";
-import UnauthorizedAccess from "./components/UnauthorizedAccess";
-import Users from "./components/Users";
 import "./index.css";
-import PublicRoute from "./lib/auth/PublicRoute";
-import { AppDispatch, store } from "./store";
-import { setUser } from "./store/slices/authSlice";
+
+const DashboardComponent = () => {
+  return <h1>Dashboard</h1>;
+};
 
 function App() {
   const { isAuthenticated, isLoading, user } = useAuth();
@@ -55,7 +58,7 @@ function App() {
                 </ProtectedRoute>
               }
             >
-              <Route index element={<Dashboard />} />
+              <Route index element={<DashboardComponent />} />
               <Route path="applications" element={<Applications />} />
               <Route path="rights" element={<RightsComponent />} />
               <Route path="users" element={<Users />} />

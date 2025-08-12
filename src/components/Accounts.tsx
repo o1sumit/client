@@ -89,39 +89,7 @@ const Accounts = () => {
         console.error("Failed to load accounts:", error);
         toast.error("Failed to load accounts");
         // Fallback to mock data if API fails
-        const mockAccounts: UIAccount[] = [
-          {
-            account_id: "acc-001",
-            account_name: "John Doe",
-            account_email: "john@example.com",
-            // account_description: "Personal account for John Doe",
-            account_type: "personal",
-            status: "active",
-            created_on: "2024-01-15T10:00:00Z",
-            updated_on: "2024-01-15T10:00:00Z",
-          },
-          {
-            account_id: "acc-002",
-            account_name: "Jane Smith",
-            account_email: "jane@example.com",
-            // account_description: "Personal account for Jane Smith",
-            account_type: "personal",
-            status: "active",
-            created_on: "2024-01-16T10:00:00Z",
-            updated_on: "2024-01-16T10:00:00Z",
-          },
-          {
-            account_id: "acc-003",
-            account_name: "Acme Corp",
-            account_email: "admin@acme.com",
-            // account_description: "Business account for Acme Corporation",
-            account_type: "business",
-            status: "active",
-            created_on: "2024-01-17T10:00:00Z",
-            updated_on: "2024-01-17T10:00:00Z",
-          },
-        ];
-        setAccounts(mockAccounts);
+        setAccounts([]);
       } finally {
         setLoading(false);
       }
