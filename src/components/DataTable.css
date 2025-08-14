@@ -84,8 +84,10 @@
 .table-wrapper {
   overflow-x: auto;
   min-height: calc(
-    24px * 15 + 24px + 36px + 36px
-  ); /* 15 rows + header + pagination + table header */
+    80vh - 150px
+  ); /* Use 80% of viewport height minus space for header/pagination */
+  max-height: calc(80vh - 150px); /* Set maximum height */
+  overflow-y: auto; /* Allow vertical scrolling when needed */
 }
 
 .data-table {
@@ -378,6 +380,11 @@
 
 /* Responsive Table - Compact */
 @media (max-width: 768px) {
+  .table-wrapper {
+    min-height: calc(70vh - 120px); /* Adjust height for mobile */
+    max-height: calc(70vh - 120px);
+  }
+
   .table-header {
     flex-direction: column;
     gap: 6px; /* Smaller gap */
