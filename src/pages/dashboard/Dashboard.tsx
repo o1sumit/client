@@ -1,3 +1,5 @@
+import type { RootState } from "../store";
+
 import { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
 import { useSelector } from "react-redux";
@@ -16,13 +18,13 @@ import {
   Shield,
   Database,
 } from "lucide-react";
+
 import {
   applicationsAPI,
   rightsAPI,
   accountsAPI,
   usersAPI,
 } from "../services/api";
-import type { RootState } from "../store";
 
 interface DashboardStats {
   applications: {
@@ -86,6 +88,7 @@ const Dashboard = () => {
     const loadDashboardData = async () => {
       if (!isAuthenticated) {
         console.log("User not authenticated, skipping dashboard load");
+
         return;
       }
 
@@ -255,13 +258,14 @@ const Dashboard = () => {
   // Calculate trend percentages (mock data for now)
   const getTrendPercentage = (current: number, previous: number = 0) => {
     if (previous === 0) return current > 0 ? 12 : 0;
+
     return Math.round(((current - previous) / previous) * 100);
   };
 
   if (loading) {
     return (
       <div className="loading-spinner">
-        <div className="spinner"></div>
+        <div className="spinner" />
       </div>
     );
   }
@@ -292,15 +296,15 @@ const Dashboard = () => {
               onClick={handleRefreshData}
             >
               <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="14"
-                height="14"
-                viewBox="0 0 24 24"
                 fill="none"
+                height="14"
                 stroke="currentColor"
-                strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+                width="14"
+                xmlns="http://www.w3.org/2000/svg"
               >
                 <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
                 <path d="M21 3v5h-5" />
@@ -388,19 +392,19 @@ const Dashboard = () => {
               <p>Common tasks and shortcuts</p>
             </div>
             <div className="action-buttons">
-              <a href="/applications" className="action-btn">
+              <a className="action-btn" href="/applications">
                 <Plus size={16} />
                 <span>Add Application</span>
               </a>
-              <a href="/rights" className="action-btn">
+              <a className="action-btn" href="/rights">
                 <Activity size={16} />
                 <span>Manage Rights</span>
               </a>
-              <a href="/accounts" className="action-btn">
+              <a className="action-btn" href="/accounts">
                 <Activity size={16} />
                 <span>Add Account</span>
               </a>
-              <a href="/users" className="action-btn">
+              <a className="action-btn" href="/users">
                 <Activity size={16} />
                 <span>Add User</span>
               </a>

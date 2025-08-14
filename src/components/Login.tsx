@@ -1,11 +1,13 @@
+import type { AppDispatch } from "../store";
+
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Eye, EyeOff, Loader2, Lock, Shield, User } from "lucide-react";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import type { AppDispatch } from "../store";
-import { login } from "../store/slices/authSlice";
 import { useAuth } from "react-oidc-context";
+
+import { login } from "../store/slices/authSlice";
 
 const validationSchema = Yup.object({
   email: Yup.string()
@@ -18,7 +20,7 @@ const validationSchema = Yup.object({
 
 const Login = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { signinRedirect } = useAuth()
+  const { signinRedirect } = useAuth();
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
@@ -31,7 +33,6 @@ const Login = () => {
     onSubmit: async (values) => {
       setError("");
       try {
-
         await dispatch(login(values)).unwrap();
       } catch (error: any) {
         console.error("Login failed:", error);
@@ -51,22 +52,24 @@ const Login = () => {
           <p className="login-subtitle">Sign in to your account</p>
         </div>
 
-        <form onSubmit={formik.handleSubmit} className="login-form">
+        <form className="login-form" onSubmit={formik.handleSubmit}>
           {error && <div className="error-message">{error}</div>}
 
           <div className="form-group">
             <label htmlFor="email">Email</label>
             <div className="input-group">
-              <User size={18} className="input-icon" />
+              <User className="input-icon" size={18} />
               <input
+                className={
+                  formik.touched.email && formik.errors.email ? "error" : ""
+                }
                 id="email"
                 name="email"
+                placeholder="Enter your email address"
                 type="text"
                 value={formik.values.email}
-                onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                placeholder="Enter your email address"
-                className={formik.touched.email && formik.errors.email ? "error" : ""}
+                onChange={formik.handleChange}
               />
             </div>
             {formik.touched.email && formik.errors.email && (
@@ -77,20 +80,24 @@ const Login = () => {
           <div className="form-group">
             <label htmlFor="password">Password</label>
             <div className="input-group">
-              <Lock size={18} className="input-icon" />
+              <Lock className="input-icon" size={18} />
               <input
+                className={
+                  formik.touched.password && formik.errors.password
+                    ? "error"
+                    : ""
+                }
                 id="password"
                 name="password"
+                placeholder="Enter your password"
                 type={showPassword ? "text" : "password"}
                 value={formik.values.password}
-                onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                placeholder="Enter your password"
-                className={formik.touched.password && formik.errors.password ? "error" : ""}
+                onChange={formik.handleChange}
               />
               <button
-                type="button"
                 className="password-toggle"
+                type="button"
                 onClick={() => setShowPassword(!showPassword)}
               >
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
@@ -101,10 +108,14 @@ const Login = () => {
             )}
           </div>
 
-          <button type="submit" disabled={formik.isSubmitting} className="login-button">
+          <button
+            className="login-button"
+            disabled={formik.isSubmitting}
+            type="submit"
+          >
             {formik.isSubmitting ? (
               <>
-                <Loader2 size={18} className="spinner-icon" />
+                <Loader2 className="spinner-icon" size={18} />
                 Signing in...
               </>
             ) : (
@@ -112,10 +123,13 @@ const Login = () => {
             )}
           </button>
 
-          <button type="button" className="login-button" onClick={() => signinRedirect()}>
+          <button
+            className="login-button"
+            type="button"
+            onClick={() => signinRedirect()}
+          >
             Keycloak Login
           </button>
-
 
           <div className="login-info">
             <p className="demo-info">
@@ -128,7 +142,7 @@ const Login = () => {
           </div>
         </form>
       </div>
-    </div >
+    </div>
   );
 };
 

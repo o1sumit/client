@@ -1,6 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { authAPI } from "../../services/api";
 import type {
   AuthResponse,
   ProfileResponse,
@@ -9,6 +7,10 @@ import type {
   LegacyProfileResponse,
   LegacyVerifyResponse,
 } from "../../services/api";
+
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+
+import { authAPI } from "../../services/api";
 
 // Types
 interface User {
@@ -83,11 +85,12 @@ export const login = createAsyncThunk(
       } else {
         throw new Error("Invalid response format");
       }
+
       return authData;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.error || "Login failed");
     }
-  }
+  },
 );
 
 export const register = createAsyncThunk(
@@ -109,13 +112,14 @@ export const register = createAsyncThunk(
 
       localStorage.setItem("token", authData.token);
       localStorage.setItem("user", JSON.stringify(authData.user));
+
       return authData;
     } catch (error: any) {
       return rejectWithValue(
-        error.response?.data?.error || "Registration failed"
+        error.response?.data?.error || "Registration failed",
       );
     }
-  }
+  },
 );
 
 export const logout = createAsyncThunk(
@@ -125,11 +129,12 @@ export const logout = createAsyncThunk(
       // await authAPI.logout();
       localStorage.removeItem("token");
       localStorage.removeItem("user");
+
       return null;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.error || "Logout failed");
     }
-  }
+  },
 );
 
 export const verifyToken = createAsyncThunk(
@@ -157,11 +162,12 @@ export const verifyToken = createAsyncThunk(
     } catch (error: any) {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
+
       return rejectWithValue(
-        error.response?.data?.error || "Token verification failed"
+        error.response?.data?.error || "Token verification failed",
       );
     }
-  }
+  },
 );
 
 export const getProfile = createAsyncThunk(
@@ -184,10 +190,10 @@ export const getProfile = createAsyncThunk(
       return profileData;
     } catch (error: any) {
       return rejectWithValue(
-        error.response?.data?.error || "Failed to get profile"
+        error.response?.data?.error || "Failed to get profile",
       );
     }
-  }
+  },
 );
 
 const initialState: AuthState = {

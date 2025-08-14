@@ -1,3 +1,6 @@
+import type { AppDispatch, RootState } from "../store";
+import type { AdminUser, AdminRole, UserStatus } from "../types/entities";
+
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -21,9 +24,9 @@ import {
   Clock,
   Calendar,
 } from "lucide-react";
-import type { AppDispatch, RootState } from "../store";
+
 import { setSelectedAdmin } from "../store/slices/adminManagementSlice";
-import type { AdminUser, AdminRole, UserStatus } from "../types/entities";
+
 import AdminStatusToggle from "./AdminStatusToggle";
 import "./AdminTable.css";
 
@@ -41,17 +44,19 @@ const AdminTable: React.FC<AdminTableProps> = ({
   loading = false,
 }) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { adminUsers, pagination } = useSelector((state: RootState) => state.adminManagement);
-  
+  const { adminUsers, pagination } = useSelector(
+    (state: RootState) => state.adminManagement,
+  );
+
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
   // Helper function to format role names
   const formatRoleName = (role: AdminRole): string => {
     return role
-      .split('_')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
+      .split("_")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
   };
 
   // Helper function to format date
@@ -61,7 +66,8 @@ const AdminTable: React.FC<AdminTableProps> = ({
 
   // Helper function to format last login
   const formatLastLogin = (lastLoginAt: string | null | undefined): string => {
-    if (!lastLoginAt) return 'Never';
+    if (!lastLoginAt) return "Never";
+
     return formatDate(lastLoginAt);
   };
 
@@ -72,14 +78,15 @@ const AdminTable: React.FC<AdminTableProps> = ({
       header: "Name",
       cell: ({ row }) => {
         const admin = row.original;
+
         return (
           <div className="admin-name-cell">
             <div className="admin-name">
-              <strong>{admin.firstName} {admin.lastName}</strong>
+              <strong>
+                {admin.firstName} {admin.lastName}
+              </strong>
             </div>
-            <div className="admin-username">
-              @{admin.username}
-            </div>
+            <div className="admin-username">@{admin.username}</div>
           </div>
         );
       },
@@ -88,9 +95,7 @@ const AdminTable: React.FC<AdminTableProps> = ({
       accessorKey: "email",
       header: "Email",
       cell: ({ row }) => (
-        <div className="admin-email">
-          {row.original.email}
-        </div>
+        <div className="admin-email">{row.original.email}</div>
       ),
     },
     {
@@ -107,6 +112,7 @@ const AdminTable: React.FC<AdminTableProps> = ({
       header: "Status",
       cell: ({ row }) => {
         const admin = row.original;
+
         return (
           <div className="status-cell">
             <span className={`status-badge status-${admin.status}`}>
@@ -115,8 +121,8 @@ const AdminTable: React.FC<AdminTableProps> = ({
             {onToggleStatus && (
               <AdminStatusToggle
                 admin={admin}
-                onToggle={onToggleStatus}
                 className="table-status-toggle"
+                onToggle={onToggleStatus}
               />
             )}
           </div>
@@ -128,7 +134,7 @@ const AdminTable: React.FC<AdminTableProps> = ({
       header: "Last Login",
       cell: ({ row }) => (
         <div className="last-login-cell">
-          <Clock size={12} className="cell-icon" />
+          <Clock className="cell-icon" size={12} />
           <span>{formatLastLogin(row.original.lastLoginAt)}</span>
         </div>
       ),
@@ -138,7 +144,7 @@ const AdminTable: React.FC<AdminTableProps> = ({
       header: "Created",
       cell: ({ row }) => (
         <div className="created-cell">
-          <Calendar size={12} className="cell-icon" />
+          <Calendar className="cell-icon" size={12} />
           <span>{formatDate(row.original.createdAt)}</span>
         </div>
       ),
@@ -172,14 +178,14 @@ const AdminTable: React.FC<AdminTableProps> = ({
       <div className="admin-table-container">
         <div className="loading-skeleton">
           <div className="skeleton-header">
-            <div className="skeleton-search"></div>
-            <div className="skeleton-button"></div>
+            <div className="skeleton-search" />
+            <div className="skeleton-button" />
           </div>
           <div className="skeleton-table">
             {Array.from({ length: 5 }).map((_, index) => (
               <div key={index} className="skeleton-row">
                 {Array.from({ length: 6 }).map((_, cellIndex) => (
-                  <div key={cellIndex} className="skeleton-cell"></div>
+                  <div key={cellIndex} className="skeleton-cell" />
                 ))}
               </div>
             ))}
@@ -194,7 +200,7 @@ const AdminTable: React.FC<AdminTableProps> = ({
     return (
       <div className="admin-table-container">
         <div className="empty-state">
-          <UserCog size={48} className="empty-icon" />
+          <UserCog className="empty-icon" size={48} />
           <h3>No admin users found</h3>
           <p>Get started by creating your first admin user.</p>
         </div>
@@ -220,7 +226,7 @@ const AdminTable: React.FC<AdminTableProps> = ({
                       >
                         {flexRender(
                           header.column.columnDef.header,
-                          header.getContext()
+                          header.getContext(),
                         )}
                         {header.column.getCanSort() && (
                           <span className="sort-icon">
@@ -242,41 +248,38 @@ const AdminTable: React.FC<AdminTableProps> = ({
           </thead>
           <tbody>
             {table.getRowModel().rows.map((row) => (
-              <tr 
-                key={row.id} 
+              <tr
+                key={row.id}
                 className="table-row"
                 onClick={() => handleRowClick(row.original)}
               >
                 {row.getVisibleCells().map((cell) => (
                   <td key={cell.id} className="table-cell">
-                    {flexRender(
-                      cell.column.columnDef.cell,
-                      cell.getContext()
-                    )}
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </td>
                 ))}
                 <td className="table-cell actions-cell">
                   <div className="action-buttons">
                     {onEdit && (
                       <button
+                        className="action-btn edit-btn"
+                        title="Edit"
                         onClick={(e) => {
                           e.stopPropagation();
                           onEdit(row.original);
                         }}
-                        className="action-btn edit-btn"
-                        title="Edit"
                       >
                         <Edit size={14} />
                       </button>
                     )}
                     {onDelete && (
                       <button
+                        className="action-btn delete-btn"
+                        title="Delete"
                         onClick={(e) => {
                           e.stopPropagation();
                           onDelete(row.original);
                         }}
-                        className="action-btn delete-btn"
-                        title="Delete"
                       >
                         <Trash2 size={14} />
                       </button>
@@ -297,9 +300,9 @@ const AdminTable: React.FC<AdminTableProps> = ({
               Page {pagination.page} of {pagination.pages}
             </span>
             <span>
-              Showing {((pagination.page - 1) * pagination.limit) + 1} to{' '}
-              {Math.min(pagination.page * pagination.limit, pagination.total)} of{' '}
-              {pagination.total} results
+              Showing {(pagination.page - 1) * pagination.limit + 1} to{" "}
+              {Math.min(pagination.page * pagination.limit, pagination.total)}{" "}
+              of {pagination.total} results
             </span>
           </div>
           {/* Pagination controls will be implemented when needed */}

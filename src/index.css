@@ -1477,6 +1477,30 @@ body {
   background: var(--ms-bg-primary);
 }
 
+.modal-footer-application {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--ms-spacing-sm); /* Smaller */
+  padding-top: var(--ms-spacing-lg); /* Smaller */
+  border-top: 1px solid var(--ms-border-secondary);
+  background: var(--ms-bg-primary);
+}
+
+/* Error Messages */
+.text-red-500 {
+  color: #ef4444;
+  font-size: 0.75rem;
+  margin-top: 6px;
+  display: block;
+}
+
+.text-red-500-sm {
+  color: #ef4444;
+  font-size: 0.75rem;
+  margin-top: 6px;
+  margin-left: 1px;
+}
+
 .cancel-btn,
 .save-btn {
   padding: var(--ms-spacing-xs) var(--ms-spacing-md); /* Smaller */

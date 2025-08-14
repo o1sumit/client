@@ -1,9 +1,9 @@
+import type { AppDispatch } from "../store";
+
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { logout } from "../store/slices/authSlice";
 import { useAuth } from "react-oidc-context";
-import { usePermissions, ADMIN_PERMISSIONS } from "../utils/permissions";
 import {
   LayoutDashboard,
   Rocket,
@@ -15,7 +15,9 @@ import {
   Menu,
   ChevronRight,
 } from "lucide-react";
-import type { AppDispatch } from "../store";
+
+import { logout } from "../store/slices/authSlice";
+import { usePermissions } from "../utils/permissions";
 
 interface SidebarProps {
   children: React.ReactNode;
@@ -64,53 +66,53 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
         </div>
 
         <nav className="sidebar-nav">
-          <Link to="/" className={`nav-item ${isActive("/") ? "active" : ""}`}>
+          <Link className={`nav-item ${isActive("/") ? "active" : ""}`} to="/">
             <LayoutDashboard size={18} />
             <span>Dashboard</span>
-            <ChevronRight size={16} className="nav-arrow" />
+            <ChevronRight className="nav-arrow" size={16} />
           </Link>
           <Link
-            to="/applications"
             className={`nav-item ${isActive("/applications") ? "active" : ""}`}
+            to="/applications"
           >
             <Rocket size={18} />
             <span>Applications</span>
-            <ChevronRight size={16} className="nav-arrow" />
+            <ChevronRight className="nav-arrow" size={16} />
           </Link>
           <Link
-            to="/rights"
             className={`nav-item ${isActive("/rights") ? "active" : ""}`}
+            to="/rights"
           >
             <Shield size={18} />
             <span>Rights</span>
-            <ChevronRight size={16} className="nav-arrow" />
+            <ChevronRight className="nav-arrow" size={16} />
           </Link>
           <Link
-            to="/accounts"
             className={`nav-item ${isActive("/accounts") ? "active" : ""}`}
+            to="/accounts"
           >
             <Users size={18} />
             <span>Accounts</span>
-            <ChevronRight size={16} className="nav-arrow" />
+            <ChevronRight className="nav-arrow" size={16} />
           </Link>
           <Link
-            to="/users"
             className={`nav-item ${isActive("/users") ? "active" : ""}`}
+            to="/users"
           >
             <User size={18} />
             <span>Users</span>
-            <ChevronRight size={16} className="nav-arrow" />
+            <ChevronRight className="nav-arrow" size={16} />
           </Link>
           {canManageAdmins() && (
             <Link
-              to="/manage-admin"
               className={`nav-item ${
                 isActive("/manage-admin") ? "active" : ""
               }`}
+              to="/manage-admin"
             >
               <UserCog size={18} />
               <span>Manage Admin</span>
-              <ChevronRight size={16} className="nav-arrow" />
+              <ChevronRight className="nav-arrow" size={16} />
             </Link>
           )}
         </nav>
@@ -127,7 +129,7 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
               {/* <p className="user-role">Administrator</p> */}
             </div>
           </div>
-          <button onClick={handleLogout} className="logout-btn">
+          <button className="logout-btn" onClick={handleLogout}>
             <LogOut size={16} />
             <span>Logout</span>
           </button>

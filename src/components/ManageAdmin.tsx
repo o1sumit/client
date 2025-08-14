@@ -1,7 +1,10 @@
+import type { AppDispatch, RootState } from "../store";
+import type { AdminUser } from "../types/entities";
+
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Plus, UserCog } from "lucide-react";
-import type { AppDispatch, RootState } from "../store";
+import { Plus } from "lucide-react";
+
 import {
   fetchAdminUsers,
   fetchPermissions,
@@ -11,8 +14,8 @@ import {
   clearError,
   setSelectedAdmin,
 } from "../store/slices/adminManagementSlice";
-import type { AdminUser } from "../types/entities";
-import { usePermissions, ADMIN_PERMISSIONS } from "../utils/permissions";
+import { usePermissions } from "../utils/permissions";
+
 import AdminFilters from "./AdminFilters";
 import AdminTable from "./AdminTable";
 import AdminModal from "./AdminModal";
@@ -64,6 +67,7 @@ const ManageAdmin: React.FC = () => {
       page: pagination.page,
       limit: pagination.limit,
     };
+
     dispatch(fetchAdminUsers(params));
   }, [dispatch, filters, pagination.page, pagination.limit]);
 
@@ -97,7 +101,7 @@ const ManageAdmin: React.FC = () => {
 
     try {
       await dispatch(
-        updateAdminUser({ id: selectedAdminForEdit.id, data: values })
+        updateAdminUser({ id: selectedAdminForEdit.id, data: values }),
       ).unwrap();
       setIsEditModalOpen(false);
       setSelectedAdminForEdit(null);
@@ -137,8 +141,8 @@ const ManageAdmin: React.FC = () => {
         {canCreateAdmin() && (
           <button
             className="btn btn-primary"
-            onClick={handleCreateAdmin}
             disabled={loading.create}
+            onClick={handleCreateAdmin}
           >
             <Plus size={16} />
             Add Admin
@@ -160,7 +164,6 @@ const ManageAdmin: React.FC = () => {
       {/* Admin Table Section */}
       <AdminTable
         loading={loading.list}
-        onEdit={canEditAdmin() ? handleEditAdmin : undefined}
         onDelete={
           canDeleteAdmin()
             ? (admin) => {
@@ -169,6 +172,7 @@ const ManageAdmin: React.FC = () => {
               }
             : undefined
         }
+        onEdit={canEditAdmin() ? handleEditAdmin : undefined}
         onToggleStatus={
           canToggleAdminStatus()
             ? (admin, newStatus) => {
@@ -182,36 +186,36 @@ const ManageAdmin: React.FC = () => {
 
       {/* Admin Modals */}
       <AdminModal
-        isOpen={isCreateModalOpen}
-        onClose={handleCloseCreateModal}
-        title="Create Admin User"
         isLoading={loading.create}
+        isOpen={isCreateModalOpen}
         maxWidth="600px"
+        title="Create Admin User"
+        onClose={handleCloseCreateModal}
       >
         <CreateAdminForm
-          onSubmit={handleCreateAdminSubmit}
-          onCancel={handleCloseCreateModal}
-          availableRoles={availableRoles}
           availablePermissions={availablePermissions}
+          availableRoles={availableRoles}
           isLoading={loading.create}
+          onCancel={handleCloseCreateModal}
+          onSubmit={handleCreateAdminSubmit}
         />
       </AdminModal>
 
       <AdminModal
-        isOpen={isEditModalOpen}
-        onClose={handleCloseEditModal}
-        title="Edit Admin User"
         isLoading={loading.update}
+        isOpen={isEditModalOpen}
         maxWidth="600px"
+        title="Edit Admin User"
+        onClose={handleCloseEditModal}
       >
         {selectedAdminForEdit && (
           <EditAdminForm
             admin={selectedAdminForEdit}
-            onSubmit={handleEditAdminSubmit}
-            onCancel={handleCloseEditModal}
-            availableRoles={availableRoles}
             availablePermissions={availablePermissions}
+            availableRoles={availableRoles}
             isLoading={loading.update}
+            onCancel={handleCloseEditModal}
+            onSubmit={handleEditAdminSubmit}
           />
         )}
       </AdminModal>

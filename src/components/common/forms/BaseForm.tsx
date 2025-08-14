@@ -1,34 +1,37 @@
-import { Formik, Form, type FormikHelpers } from 'formik';
-import * as yup from 'yup';
+import { Formik, Form, type FormikHelpers } from "formik";
+import * as yup from "yup";
 
 interface BaseFormProps<T extends Record<string, any>> {
-    initialValues: T;
-    validationSchema: yup.ObjectSchema<any>;
-    onSubmit: (values: T, formikHelpers: FormikHelpers<T>) => Promise<void> | void;
-    children: React.ReactNode;
-    className?: string;
-    enableReinitialize?: boolean;
+  initialValues: T;
+  validationSchema: yup.ObjectSchema<any>;
+  onSubmit: (
+    values: T,
+    formikHelpers: FormikHelpers<T>,
+  ) => Promise<void> | void;
+  children: React.ReactNode;
+  className?: string;
+  enableReinitialize?: boolean;
 }
 
 export function BaseForm<T extends Record<string, any>>({
-    initialValues,
-    validationSchema,
-    onSubmit,
-    children,
-    className = '',
-    enableReinitialize = false,
+  initialValues,
+  validationSchema,
+  onSubmit,
+  children,
+  className = "",
+  enableReinitialize = false,
 }: BaseFormProps<T>) {
-    return (
-        <Formik
-            initialValues={initialValues}
-            validationSchema={validationSchema}
-            onSubmit={onSubmit}
-            enableReinitialize={enableReinitialize}
-        >
-            {({ isSubmitting }) => (
-                <Form className={`space-y-4 ${className}`}>
-                    {children}
-                    <div className="flex justify-end space-x-2 pt-4">
+  return (
+    <Formik
+      enableReinitialize={enableReinitialize}
+      initialValues={initialValues}
+      validationSchema={validationSchema}
+      onSubmit={onSubmit}
+    >
+      {({ isSubmitting }) => (
+        <Form className={`space-y-4 ${className}`}>
+          {children}
+          {/* <div className="flex justify-end space-x-2 pt-4">
                         <button
                             type="submit"
                             disabled={isSubmitting}
@@ -36,9 +39,9 @@ export function BaseForm<T extends Record<string, any>>({
                         >
                             {isSubmitting ? 'Submitting...' : 'Submit'}
                         </button>
-                    </div>
-                </Form>
-            )}
-        </Formik>
-    );
+                    </div> */}
+        </Form>
+      )}
+    </Formik>
+  );
 }

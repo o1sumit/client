@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import './AdminModal.css';
+import React, { useEffect } from "react";
+import "./AdminModal.css";
 
 interface AdminModalProps {
   isOpen: boolean;
@@ -16,25 +16,25 @@ const AdminModal: React.FC<AdminModalProps> = ({
   title,
   children,
   isLoading = false,
-  maxWidth = '500px'
+  maxWidth = "500px",
 }) => {
   // Handle escape key to close modal
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && isOpen) {
+      if (event.key === "Escape" && isOpen) {
         onClose();
       }
     };
 
     if (isOpen) {
-      document.addEventListener('keydown', handleEscape);
+      document.addEventListener("keydown", handleEscape);
       // Prevent body scroll when modal is open
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     }
 
     return () => {
-      document.removeEventListener('keydown', handleEscape);
-      document.body.style.overflow = 'unset';
+      document.removeEventListener("keydown", handleEscape);
+      document.body.style.overflow = "unset";
     };
   }, [isOpen, onClose]);
 
@@ -49,26 +49,26 @@ const AdminModal: React.FC<AdminModalProps> = ({
 
   return (
     <div className="admin-modal-overlay" onClick={handleOverlayClick}>
-      <div 
-        className="admin-modal" 
+      <div
+        className="admin-modal"
         style={{ maxWidth }}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="admin-modal-header">
           <h2>{title}</h2>
-          <button 
-            className="admin-modal-close-btn" 
-            onClick={onClose}
+          <button
             aria-label="Close modal"
+            className="admin-modal-close-btn"
+            onClick={onClose}
           >
             ×
           </button>
         </div>
-        
+
         <div className="admin-modal-body">
           {isLoading ? (
             <div className="admin-modal-loading">
-              <div className="admin-modal-spinner"></div>
+              <div className="admin-modal-spinner" />
               <p>Loading...</p>
             </div>
           ) : (

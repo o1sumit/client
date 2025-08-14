@@ -1,23 +1,25 @@
-import { BaseForm, FormField, FormSelect, FormTextarea } from './index';
-import { applicationValidationSchema } from '../../../utils/validation';
-import type { ApplicationFormData } from '../../../types/forms';
+import type { ApplicationFormData } from "../../../types/forms";
+
+import { applicationValidationSchema } from "../../../utils/validation";
+
+import { BaseForm, FormField, FormSelect, FormTextarea } from "./index";
 
 // Example component showing how to use the form components
 export function ApplicationFormExample() {
   const initialValues: ApplicationFormData = {
-    name: '',
-    applicationId: '',
-    description: '',
-    status: 'active',
+    name: "",
+    applicationId: "",
+    description: "",
+    status: "active",
   };
 
   const statusOptions = [
-    { value: 'active', label: 'Active' },
-    { value: 'inactive', label: 'Inactive' },
+    { value: "active", label: "Active" },
+    { value: "inactive", label: "Inactive" },
   ];
 
   const handleSubmit = async (values: ApplicationFormData) => {
-    console.log('Form submitted:', values);
+    console.log("Form submitted:", values);
     // Handle form submission here
   };
 
@@ -30,31 +32,31 @@ export function ApplicationFormExample() {
         onSubmit={handleSubmit}
       >
         <FormField
-          name="name"
+          required
           label="Application Name"
+          name="name"
           placeholder="Enter application name"
-          required
         />
-        
+
         <FormField
-          name="applicationId"
-          label="Application ID"
-          placeholder="Enter unique application ID"
           required
+          label="Application ID"
+          name="applicationId"
+          placeholder="Enter unique application ID"
         />
-        
+
         <FormTextarea
-          name="description"
           label="Description"
+          name="description"
           placeholder="Enter application description"
           rows={4}
         />
-        
+
         <FormSelect
-          name="status"
-          label="Status"
-          options={statusOptions}
           required
+          label="Status"
+          name="status"
+          options={statusOptions}
         />
       </BaseForm>
     </div>

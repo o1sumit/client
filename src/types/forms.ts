@@ -1,20 +1,18 @@
 // Form-specific data types for the admin panel application
 
 import type {
-  ApplicationStatus,
   UserRole,
   UserStatus,
   AccountType,
   AccountStatus,
-  Permission,
-  AdminRole
-} from './entities';
+  AdminRole,
+} from "./entities";
 
 // Application form data interface
 export interface ApplicationFormData {
-  application_name: string,
-  client_secret: string,
-  version: string,
+  application_name: string;
+  client_secret: string;
+  version: string;
   // status: ApplicationStatus;
 }
 
@@ -22,7 +20,6 @@ export interface ApplicationFormData {
 export interface UserFormData {
   username: string;
   email: string;
-  password: string;
   role: UserRole;
   status: UserStatus;
 }
@@ -62,8 +59,6 @@ export interface LoginFormData {
 export interface RegisterFormData {
   username: string;
   email: string;
-  password: string;
-  confirmPassword: string;
   role?: UserRole;
 }
 
@@ -71,7 +66,6 @@ export interface RegisterFormData {
 export interface ChangePasswordFormData {
   currentPassword: string;
   newPassword: string;
-  confirmPassword: string;
 }
 
 // Form validation error interface
@@ -97,8 +91,6 @@ export interface CreateAdminFormData {
   lastName: string;
   role: AdminRole;
   permissions: string[];
-  password: string;
-  confirmPassword: string;
 }
 
 // Edit admin form data interface
@@ -115,8 +107,8 @@ export interface EditAdminFormData {
 // Admin filters data interface
 export interface AdminFiltersData {
   search: string;
-  role: AdminRole | 'all';
-  status: UserStatus | 'all';
+  role: AdminRole | "all";
+  status: UserStatus | "all";
 }
 
 // Modal form props interface

@@ -1,9 +1,12 @@
-import React, { useState, useEffect, useCallback } from "react";
+import type { AppDispatch, RootState } from "../store";
+import type { AdminRole, UserStatus } from "../types/entities";
+
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Search, Filter, X } from "lucide-react";
-import type { AppDispatch, RootState } from "../store";
+
 import { setFilters, resetFilters } from "../store/slices/adminManagementSlice";
-import type { AdminRole, UserStatus } from "../types/entities";
+
 import "./AdminFilters.css";
 
 interface AdminFiltersProps {
@@ -12,8 +15,10 @@ interface AdminFiltersProps {
 
 const AdminFilters: React.FC<AdminFiltersProps> = ({ className = "" }) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { filters, availableRoles } = useSelector((state: RootState) => state.adminManagement);
-  
+  const { filters, availableRoles } = useSelector(
+    (state: RootState) => state.adminManagement,
+  );
+
   // Local state for debounced search
   const [searchInput, setSearchInput] = useState(filters.search);
 
@@ -40,24 +45,29 @@ const AdminFilters: React.FC<AdminFiltersProps> = ({ className = "" }) => {
 
   // Handle role filter change
   const handleRoleFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const role = e.target.value as AdminRole | 'all';
+    const role = e.target.value as AdminRole | "all";
+
     dispatch(setFilters({ role }));
   };
 
   // Handle status filter change
-  const handleStatusFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const status = e.target.value as UserStatus | 'all';
+  const handleStatusFilterChange = (
+    e: React.ChangeEvent<HTMLSelectElement>,
+  ) => {
+    const status = e.target.value as UserStatus | "all";
+
     dispatch(setFilters({ status }));
   };
 
   // Handle clear all filters
   const handleClearFilters = () => {
-    setSearchInput('');
+    setSearchInput("");
     dispatch(resetFilters());
   };
 
   // Check if any filters are active
-  const hasActiveFilters = filters.search || filters.role !== 'all' || filters.status !== 'all';
+  const hasActiveFilters =
+    filters.search || filters.role !== "all" || filters.status !== "all";
 
   return (
     <div className={`admin-filters ${className}`}>
@@ -65,20 +75,20 @@ const AdminFilters: React.FC<AdminFiltersProps> = ({ className = "" }) => {
         {/* Search Input */}
         <div className="filter-group search-group">
           <div className="search-input-wrapper">
-            <Search size={16} className="search-icon" />
+            <Search className="search-icon" size={16} />
             <input
-              type="text"
+              className="form-input search-input"
               placeholder="Search by name, email, or username..."
+              type="text"
               value={searchInput}
               onChange={handleSearchChange}
-              className="form-input search-input"
             />
             {searchInput && (
               <button
-                type="button"
-                className="clear-search-btn"
-                onClick={() => setSearchInput('')}
                 aria-label="Clear search"
+                className="clear-search-btn"
+                type="button"
+                onClick={() => setSearchInput("")}
               >
                 <X size={14} />
               </button>
@@ -89,15 +99,15 @@ const AdminFilters: React.FC<AdminFiltersProps> = ({ className = "" }) => {
         {/* Filter Controls */}
         <div className="filter-group controls-group">
           <div className="filter-control">
-            <label htmlFor="role-filter" className="filter-label">
+            <label className="filter-label" htmlFor="role-filter">
               <Filter size={14} />
               Role
             </label>
             <select
+              className="form-select filter-select"
               id="role-filter"
               value={filters.role}
               onChange={handleRoleFilterChange}
-              className="form-select filter-select"
             >
               <option value="all">All Roles</option>
               {availableRoles.map((role) => (
@@ -109,14 +119,14 @@ const AdminFilters: React.FC<AdminFiltersProps> = ({ className = "" }) => {
           </div>
 
           <div className="filter-control">
-            <label htmlFor="status-filter" className="filter-label">
+            <label className="filter-label" htmlFor="status-filter">
               Status
             </label>
             <select
+              className="form-select filter-select"
               id="status-filter"
               value={filters.status}
               onChange={handleStatusFilterChange}
-              className="form-select filter-select"
             >
               <option value="all">All Status</option>
               <option value="active">Active</option>
@@ -128,8 +138,8 @@ const AdminFilters: React.FC<AdminFiltersProps> = ({ className = "" }) => {
           {hasActiveFilters && (
             <div className="filter-control">
               <button
-                type="button"
                 className="btn btn-secondary btn-sm clear-filters-btn"
+                type="button"
                 onClick={handleClearFilters}
               >
                 <X size={14} />
@@ -149,36 +159,38 @@ const AdminFilters: React.FC<AdminFiltersProps> = ({ className = "" }) => {
               <span className="filter-tag">
                 Search: "{filters.search}"
                 <button
+                  aria-label="Remove search filter"
                   type="button"
                   onClick={() => {
-                    setSearchInput('');
-                    dispatch(setFilters({ search: '' }));
+                    setSearchInput("");
+                    dispatch(setFilters({ search: "" }));
                   }}
-                  aria-label="Remove search filter"
                 >
                   <X size={12} />
                 </button>
               </span>
             )}
-            {filters.role !== 'all' && (
+            {filters.role !== "all" && (
               <span className="filter-tag">
                 Role: {formatRoleName(filters.role)}
                 <button
-                  type="button"
-                  onClick={() => dispatch(setFilters({ role: 'all' }))}
                   aria-label="Remove role filter"
+                  type="button"
+                  onClick={() => dispatch(setFilters({ role: "all" }))}
                 >
                   <X size={12} />
                 </button>
               </span>
             )}
-            {filters.status !== 'all' && (
+            {filters.status !== "all" && (
               <span className="filter-tag">
-                Status: {filters.status.charAt(0).toUpperCase() + filters.status.slice(1)}
+                Status:{" "}
+                {filters.status.charAt(0).toUpperCase() +
+                  filters.status.slice(1)}
                 <button
-                  type="button"
-                  onClick={() => dispatch(setFilters({ status: 'all' }))}
                   aria-label="Remove status filter"
+                  type="button"
+                  onClick={() => dispatch(setFilters({ status: "all" }))}
                 >
                   <X size={12} />
                 </button>
@@ -194,9 +206,9 @@ const AdminFilters: React.FC<AdminFiltersProps> = ({ className = "" }) => {
 // Helper function to format role names
 const formatRoleName = (role: AdminRole): string => {
   return role
-    .split('_')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
+    .split("_")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
 };
 
 export default AdminFilters;

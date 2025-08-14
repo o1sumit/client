@@ -1,18 +1,19 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { adminManagementAPI } from "../../services/api";
 import type {
   AdminUser,
   AdminPermission,
   AdminRole,
-  UserStatus
+  UserStatus,
 } from "../../types/entities";
 import type {
   CreateAdminFormData,
   EditAdminFormData,
-  AdminFiltersData
+  AdminFiltersData,
 } from "../../types/forms";
-import type { ApiResponse } from "../../types/api";
+
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+
+import { adminManagementAPI } from "../../services/api";
 
 // Admin Management State Interface
 interface AdminManagementState {
@@ -41,51 +42,65 @@ interface AdminManagementState {
 // Async thunks
 export const fetchAdminUsers = createAsyncThunk(
   "adminManagement/fetchAdminUsers",
-  async (params: {
-    search?: string;
-    role?: AdminRole;
-    status?: UserStatus;
-    page?: number;
-    limit?: number;
-  } | undefined, { rejectWithValue }: { rejectWithValue: any }) => {
+  async (
+    params:
+      | {
+          search?: string;
+          role?: AdminRole;
+          status?: UserStatus;
+          page?: number;
+          limit?: number;
+        }
+      | undefined,
+    { rejectWithValue }: { rejectWithValue: any },
+  ) => {
     try {
       const response = await adminManagementAPI.getAll(params);
+
       return response.data;
     } catch (error: any) {
       return rejectWithValue(
-        error.response?.data?.message || "Failed to fetch admin users"
+        error.response?.data?.message || "Failed to fetch admin users",
       );
     }
-  }
+  },
 );
 
 export const createAdminUser = createAsyncThunk(
   "adminManagement/createAdminUser",
-  async (adminData: CreateAdminFormData, { rejectWithValue }: { rejectWithValue: any }) => {
+  async (
+    adminData: CreateAdminFormData,
+    { rejectWithValue }: { rejectWithValue: any },
+  ) => {
     try {
       const { confirmPassword, ...dataToSend } = adminData;
       const response = await adminManagementAPI.create(dataToSend);
+
       return response.data;
     } catch (error: any) {
       return rejectWithValue(
-        error.response?.data?.message || "Failed to create admin user"
+        error.response?.data?.message || "Failed to create admin user",
       );
     }
-  }
+  },
 );
 
 export const updateAdminUser = createAsyncThunk(
   "adminManagement/updateAdminUser",
-  async ({ id, data }: { id: string; data: Partial<EditAdminFormData> }, { rejectWithValue }: { rejectWithValue: any }) => {
+  async (
+    { id, data }: { id: string; data: Partial<EditAdminFormData> },
+    { rejectWithValue }: { rejectWithValue: any },
+  ) => {
     try {
       const response = await adminManagementAPI.update(id, data);
+
       return response.data;
     } catch (error: any) {
       return rejectWithValue(
-        error.response?.data?.message || "Failed to update admin user"
+        error.response?.data?.message || "Failed to update admin user",
       );
     }
-  }
+  },
 );
 
 export const toggleAdminStatus = createAsyncThunk(
@@ -93,13 +108,14 @@ export const toggleAdminStatus = createAsyncThunk(
   async (id: string, { rejectWithValue }: { rejectWithValue: any }) => {
     try {
       const response = await adminManagementAPI.toggleStatus(id);
+
       return response.data;
     } catch (error: any) {
       return rejectWithValue(
-        error.response?.data?.message || "Failed to toggle admin status"
+        error.response?.data?.message || "Failed to toggle admin status",
       );
     }
-  }
+  },
 );
 
 export const deleteAdminUser = createAsyncThunk(
@@ -107,13 +123,14 @@ export const deleteAdminUser = createAsyncThunk(
   async (id: string, { rejectWithValue }: { rejectWithValue: any }) => {
     try {
       await adminManagementAPI.delete(id);
+
       return id;
     } catch (error: any) {
       return rejectWithValue(
-        error.response?.data?.message || "Failed to delete admin user"
+        error.response?.data?.message || "Failed to delete admin user",
       );
     }
-  }
+  },
 );
 
 export const fetchPermissions = createAsyncThunk(
@@ -121,13 +138,14 @@ export const fetchPermissions = createAsyncThunk(
   async (_, { rejectWithValue }: { rejectWithValue: any }) => {
     try {
       const response = await adminManagementAPI.getPermissions();
+
       return response.data;
     } catch (error: any) {
       return rejectWithValue(
-        error.response?.data?.message || "Failed to fetch permissions"
+        error.response?.data?.message || "Failed to fetch permissions",
       );
     }
-  }
+  },
 );
 
 export const fetchRoles = createAsyncThunk(
@@ -135,13 +153,14 @@ export const fetchRoles = createAsyncThunk(
   async (_, { rejectWithValue }: { rejectWithValue: any }) => {
     try {
       const response = await adminManagementAPI.getRoles();
+
       return response.data;
     } catch (error: any) {
       return rejectWithValue(
-        error.response?.data?.message || "Failed to fetch roles"
+        error.response?.data?.message || "Failed to fetch roles",
       );
     }
-  }
+  },
 );
 
 const initialState: AdminManagementState = {
@@ -150,9 +169,9 @@ const initialState: AdminManagementState = {
   availablePermissions: [],
   availableRoles: [],
   filters: {
-    search: '',
-    role: 'all',
-    status: 'all'
+    search: "",
+    role: "all",
+    status: "all",
   },
   loading: {
     list: false,
@@ -160,15 +179,15 @@ const initialState: AdminManagementState = {
     update: false,
     delete: false,
     permissions: false,
-    roles: false
+    roles: false,
   },
   error: null,
   pagination: {
     page: 1,
     limit: 10,
     total: 0,
-    pages: 0
-  }
+    pages: 0,
+  },
 };
 
 const adminManagementSlice = createSlice({
@@ -184,16 +203,19 @@ const adminManagementSlice = createSlice({
     setSelectedAdmin: (state, action: PayloadAction<AdminUser | null>) => {
       state.selectedAdmin = action.payload;
     },
-    setPagination: (state, action: PayloadAction<Partial<AdminManagementState['pagination']>>) => {
+    setPagination: (
+      state,
+      action: PayloadAction<Partial<AdminManagementState["pagination"]>>,
+    ) => {
       state.pagination = { ...state.pagination, ...action.payload };
     },
     resetFilters: (state) => {
       state.filters = {
-        search: '',
-        role: 'all',
-        status: 'all'
+        search: "",
+        role: "all",
+        status: "all",
       };
-    }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -240,7 +262,10 @@ const adminManagementSlice = createSlice({
       .addCase(updateAdminUser.fulfilled, (state, action) => {
         state.loading.update = false;
         if (action.payload) {
-          const index = state.adminUsers.findIndex(admin => admin.id === action.payload.id);
+          const index = state.adminUsers.findIndex(
+            (admin) => admin.id === action.payload.id,
+          );
+
           if (index !== -1) {
             state.adminUsers[index] = action.payload;
           }
@@ -262,7 +287,10 @@ const adminManagementSlice = createSlice({
       .addCase(toggleAdminStatus.fulfilled, (state, action) => {
         state.loading.update = false;
         if (action.payload) {
-          const index = state.adminUsers.findIndex(admin => admin.id === action.payload.id);
+          const index = state.adminUsers.findIndex(
+            (admin) => admin.id === action.payload.id,
+          );
+
           if (index !== -1) {
             state.adminUsers[index] = action.payload;
           }
@@ -280,7 +308,9 @@ const adminManagementSlice = createSlice({
       })
       .addCase(deleteAdminUser.fulfilled, (state, action) => {
         state.loading.delete = false;
-        state.adminUsers = state.adminUsers.filter(admin => admin.id !== action.payload);
+        state.adminUsers = state.adminUsers.filter(
+          (admin) => admin.id !== action.payload,
+        );
         if (state.selectedAdmin?.id === action.payload) {
           state.selectedAdmin = null;
         }
@@ -325,12 +355,12 @@ const adminManagementSlice = createSlice({
   },
 });
 
-export const { 
-  clearError, 
-  setFilters, 
-  setSelectedAdmin, 
-  setPagination, 
-  resetFilters 
+export const {
+  clearError,
+  setFilters,
+  setSelectedAdmin,
+  setPagination,
+  resetFilters,
 } = adminManagementSlice.actions;
 
 export default adminManagementSlice.reducer;

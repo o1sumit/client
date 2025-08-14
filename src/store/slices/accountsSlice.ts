@@ -1,39 +1,45 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { accountsAPI, accountSharingAPI } from "../../services/api";
 import type { Account, AccountSharing, Permission } from "../../services/api";
+
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+
+import { accountsAPI, accountSharingAPI } from "../../services/api";
 
 // Async thunks
 export const fetchAccounts = createAsyncThunk(
   "accounts/fetchAccounts",
   async (params?: any) => {
     const response = await accountsAPI.getAll(params);
+
     return response.data?.data || [];
-  }
+  },
 );
 
 export const createAccount = createAsyncThunk(
   "accounts/createAccount",
   async (accountData: Partial<Account>) => {
     const response = await accountsAPI.create(accountData);
+
     return response.data?.data;
-  }
+  },
 );
 
 export const updateAccount = createAsyncThunk(
   "accounts/updateAccount",
   async ({ id, data }: { id: string; data: Partial<Account> }) => {
     const response = await accountsAPI.update(id, data);
+
     return response.data?.data;
-  }
+  },
 );
 
 export const deleteAccount = createAsyncThunk(
   "accounts/deleteAccount",
   async (id: string) => {
     await accountsAPI.delete(id);
+
     return id;
-  }
+  },
 );
 
 export const shareAccount = createAsyncThunk(
@@ -50,8 +56,9 @@ export const shareAccount = createAsyncThunk(
     };
   }) => {
     const response = await accountsAPI.share(id, data);
+
     return response.data?.data;
-  }
+  },
 );
 
 export const fetchAccountSharing = createAsyncThunk(
@@ -60,8 +67,9 @@ export const fetchAccountSharing = createAsyncThunk(
     const response = accountId
       ? await accountSharingAPI.getByAccount(accountId)
       : await accountSharingAPI.getAll();
+
     return response.data?.data || [];
-  }
+  },
 );
 
 export const createAccountSharing = createAsyncThunk(
@@ -73,24 +81,27 @@ export const createAccountSharing = createAsyncThunk(
     expiresAt?: string;
   }) => {
     const response = await accountSharingAPI.create(data);
+
     return response.data?.data;
-  }
+  },
 );
 
 export const activateAccountSharing = createAsyncThunk(
   "accounts/activateAccountSharing",
   async (id: string) => {
     const response = await accountSharingAPI.activate(id);
+
     return response.data?.data;
-  }
+  },
 );
 
 export const revokeAccountSharing = createAsyncThunk(
   "accounts/revokeAccountSharing",
   async (id: string) => {
     const response = await accountSharingAPI.revoke(id);
+
     return response.data?.data;
-  }
+  },
 );
 
 // State interface
@@ -139,7 +150,7 @@ const accountsSlice = createSlice({
         (state, action: PayloadAction<Account[]>) => {
           state.loading = false;
           state.accounts = action.payload;
-        }
+        },
       )
       .addCase(fetchAccounts.rejected, (state, action) => {
         state.loading = false;
@@ -159,7 +170,7 @@ const accountsSlice = createSlice({
           if (action.payload) {
             state.accounts.unshift(action.payload);
           }
-        }
+        },
       )
       .addCase(createAccount.rejected, (state, action) => {
         state.loading = false;
@@ -178,13 +189,14 @@ const accountsSlice = createSlice({
           state.loading = false;
           if (action.payload) {
             const index = state.accounts.findIndex(
-              (acc) => acc.id === action.payload!.id
+              (acc) => acc.id === action.payload!.id,
             );
+
             if (index !== -1) {
               state.accounts[index] = action.payload;
             }
           }
-        }
+        },
       )
       .addCase(updateAccount.rejected, (state, action) => {
         state.loading = false;
@@ -202,9 +214,9 @@ const accountsSlice = createSlice({
         (state, action: PayloadAction<string>) => {
           state.loading = false;
           state.accounts = state.accounts.filter(
-            (acc) => acc.id !== action.payload
+            (acc) => acc.id !== action.payload,
           );
-        }
+        },
       )
       .addCase(deleteAccount.rejected, (state, action) => {
         state.loading = false;
@@ -224,7 +236,7 @@ const accountsSlice = createSlice({
           if (action.payload) {
             state.accountSharing.unshift(action.payload);
           }
-        }
+        },
       )
       .addCase(shareAccount.rejected, (state, action) => {
         state.loading = false;
@@ -242,7 +254,7 @@ const accountsSlice = createSlice({
         (state, action: PayloadAction<AccountSharing[]>) => {
           state.loading = false;
           state.accountSharing = action.payload;
-        }
+        },
       )
       .addCase(fetchAccountSharing.rejected, (state, action) => {
         state.loading = false;
@@ -262,7 +274,7 @@ const accountsSlice = createSlice({
           if (action.payload) {
             state.accountSharing.unshift(action.payload);
           }
-        }
+        },
       )
       .addCase(createAccountSharing.rejected, (state, action) => {
         state.loading = false;
@@ -282,13 +294,14 @@ const accountsSlice = createSlice({
           state.loading = false;
           if (action.payload) {
             const index = state.accountSharing.findIndex(
-              (sharing) => sharing.id === action.payload!.id
+              (sharing) => sharing.id === action.payload!.id,
             );
+
             if (index !== -1) {
               state.accountSharing[index] = action.payload;
             }
           }
-        }
+        },
       )
       .addCase(activateAccountSharing.rejected, (state, action) => {
         state.loading = false;
@@ -308,13 +321,14 @@ const accountsSlice = createSlice({
           state.loading = false;
           if (action.payload) {
             const index = state.accountSharing.findIndex(
-              (sharing) => sharing.id === action.payload!.id
+              (sharing) => sharing.id === action.payload!.id,
             );
+
             if (index !== -1) {
               state.accountSharing[index] = action.payload;
             }
           }
-        }
+        },
       )
       .addCase(revokeAccountSharing.rejected, (state, action) => {
         state.loading = false;

@@ -2,6 +2,7 @@ import KeyCloakError from "@components/error/KeyCloakError";
 import { keycloak } from "@services/keycloak";
 import { useEffect, useState, type ReactNode } from "react";
 import { AuthProvider } from "react-oidc-context";
+
 import checkKeycloakEnv from "./checkEnv";
 
 interface KeycloakProviderProps {
@@ -14,6 +15,7 @@ export const KeycloakProvider = ({ children }: KeycloakProviderProps) => {
 
   useEffect(() => {
     const result = checkKeycloakEnv();
+
     setEnvCheck(result);
 
     if (!result.isValid) {
@@ -23,7 +25,7 @@ export const KeycloakProvider = ({ children }: KeycloakProviderProps) => {
 
   if (initError) {
     if (import.meta.env.DEV) {
-      return <KeyCloakError initError={initError} envCheck={envCheck} />;
+      return <KeyCloakError envCheck={envCheck} initError={initError} />;
     } else {
       return <div>Error</div>;
     }

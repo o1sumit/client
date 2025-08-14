@@ -10,13 +10,14 @@ export const checkKeycloakEnv = () => {
   ];
 
   const missingVars = requiredVars.filter(
-    (varName) => !import.meta.env[varName]
+    (varName) => !import.meta.env[varName],
   );
 
   if (missingVars.length > 0) {
     console.error(
-      `Missing required environment variables: ${missingVars.join(", ")}`
+      `Missing required environment variables: ${missingVars.join(", ")}`,
     );
+
     return {
       isValid: false,
       missingVars,

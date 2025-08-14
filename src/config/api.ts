@@ -34,6 +34,7 @@ export const API_CONFIG = {
   // Get full endpoint URL
   getEndpoint: (endpoint: string) => {
     const baseURL = API_CONFIG.getBaseURL();
+
     return `${baseURL}${endpoint}`;
   },
 };
@@ -56,7 +57,7 @@ export const switchApiVersion = (version: ApiVersion) => {
   // Optionally reload the page to apply changes
   if (import.meta.env.DEV) {
     console.log(
-      "💡 In development mode, you may need to refresh the page to see changes"
+      "💡 In development mode, you may need to refresh the page to see changes",
     );
   }
 };

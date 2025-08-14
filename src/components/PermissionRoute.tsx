@@ -1,6 +1,7 @@
-import React from 'react';
-import { Navigate } from 'react-router-dom';
-import { usePermissions, ADMIN_PERMISSIONS } from '../utils/permissions';
+import React from "react";
+import { Navigate } from "react-router-dom";
+
+import { usePermissions } from "../utils/permissions";
 
 interface PermissionRouteProps {
   children: React.ReactNode;
@@ -16,23 +17,24 @@ const PermissionRoute: React.FC<PermissionRouteProps> = ({
   requiredPermission,
   requiredPermissions,
   requireAll = true,
-  fallbackPath = '/',
-  fallbackComponent
+  fallbackPath = "/",
+  fallbackComponent,
 }) => {
-  const { hasPermission, hasAllPermissions, hasAnyPermission } = usePermissions();
+  const { hasPermission, hasAllPermissions, hasAnyPermission } =
+    usePermissions();
 
   // Check if user has required permission(s)
   const hasAccess = () => {
     if (requiredPermission) {
       return hasPermission(requiredPermission);
     }
-    
+
     if (requiredPermissions && requiredPermissions.length > 0) {
-      return requireAll 
+      return requireAll
         ? hasAllPermissions(requiredPermissions)
         : hasAnyPermission(requiredPermissions);
     }
-    
+
     // Default to true if no permissions specified
     return true;
   };
@@ -41,8 +43,8 @@ const PermissionRoute: React.FC<PermissionRouteProps> = ({
     if (fallbackComponent) {
       return <>{fallbackComponent}</>;
     }
-    
-    return <Navigate to={fallbackPath} replace />;
+
+    return <Navigate replace to={fallbackPath} />;
   }
 
   return <>{children}</>;

@@ -22,6 +22,7 @@ export default defineConfig({
       "@store/index": fileURLToPath(
         new URL("./src/store/index", import.meta.url)
       ),
+      "@pages": fileURLToPath(new URL("./src/pages", import.meta.url)),
     },
   },
 });

@@ -1,4 +1,5 @@
 import React from "react";
+
 import {
   API_CONFIG,
   API_VERSIONS,
@@ -8,7 +9,7 @@ import {
 
 const ApiVersionSwitcher: React.FC = () => {
   const [currentVersion, setCurrentVersion] = React.useState(
-    API_CONFIG.getVersion()
+    API_CONFIG.getVersion(),
   );
 
   const handleVersionChange = (version: ApiVersion) => {
@@ -34,22 +35,22 @@ const ApiVersionSwitcher: React.FC = () => {
 
       <div className="version-buttons">
         <button
-          onClick={() => handleVersionChange(API_VERSIONS.V1)}
           className={currentVersion === API_VERSIONS.V1 ? "active" : ""}
+          onClick={() => handleVersionChange(API_VERSIONS.V1)}
         >
           V1 (JWT Auth)
         </button>
 
         <button
-          onClick={() => handleVersionChange(API_VERSIONS.V2)}
           className={currentVersion === API_VERSIONS.V2 ? "active" : ""}
+          onClick={() => handleVersionChange(API_VERSIONS.V2)}
         >
           V2 (Keycloak)
         </button>
 
         <button
-          onClick={() => handleVersionChange(API_VERSIONS.LEGACY)}
           className={currentVersion === API_VERSIONS.LEGACY ? "active" : ""}
+          onClick={() => handleVersionChange(API_VERSIONS.LEGACY)}
         >
           Legacy
         </button>

@@ -1,3 +1,9 @@
+import type {
+  ColumnDef,
+  SortingState,
+  ColumnFiltersState,
+} from "@tanstack/react-table";
+
 import { useState } from "react";
 import {
   useReactTable,
@@ -6,11 +12,6 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   flexRender,
-} from "@tanstack/react-table";
-import type {
-  ColumnDef,
-  SortingState,
-  ColumnFiltersState,
 } from "@tanstack/react-table";
 import {
   ChevronDown,
@@ -73,17 +74,17 @@ export function DataTable<TData, TValue>({
       <div className="table-header">
         <div className="table-search">
           <div className="search-input-wrapper">
-            <Search size={16} className="search-icon" />
+            <Search className="search-icon" size={16} />
             <input
+              className="search-input"
               placeholder={searchPlaceholder}
               value={globalFilter ?? ""}
               onChange={(event) => setGlobalFilter(event.target.value)}
-              className="search-input"
             />
           </div>
         </div>
         {onAdd && (
-          <button onClick={onAdd} className="add-button">
+          <button className="add-button" onClick={onAdd}>
             <Plus size={16} />
             {addButtonText}
           </button>
@@ -107,7 +108,7 @@ export function DataTable<TData, TValue>({
                       >
                         {flexRender(
                           header.column.columnDef.header,
-                          header.getContext()
+                          header.getContext(),
                         )}
                         {header.column.getCanSort() && (
                           <span className="sort-icon">
@@ -137,7 +138,7 @@ export function DataTable<TData, TValue>({
                     <td key={cell.id} className="table-cell">
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </td>
                   ))}
@@ -146,27 +147,27 @@ export function DataTable<TData, TValue>({
                       <div className="action-buttons">
                         {onView && (
                           <button
-                            onClick={() => onView(row.original)}
                             className="action-btn view-btn"
                             title="View"
+                            onClick={() => onView(row.original)}
                           >
                             <Eye size={14} />
                           </button>
                         )}
                         {onEdit && (
                           <button
-                            onClick={() => onEdit(row.original)}
                             className="action-btn edit-btn"
                             title="Edit"
+                            onClick={() => onEdit(row.original)}
                           >
                             <Edit size={14} />
                           </button>
                         )}
                         {onDelete && (
                           <button
-                            onClick={() => onDelete(row.original)}
                             className="action-btn delete-btn"
                             title="Delete"
+                            onClick={() => onDelete(row.original)}
                           >
                             <Trash2 size={14} />
                           </button>
@@ -178,7 +179,7 @@ export function DataTable<TData, TValue>({
               ))
             ) : (
               <tr>
-                <td colSpan={columns.length + 1} className="no-data">
+                <td className="no-data" colSpan={columns.length + 1}>
                   No data found.
                 </td>
               </tr>
@@ -203,16 +204,16 @@ export function DataTable<TData, TValue>({
             {Math.min(
               table.getState().pagination.pageSize *
                 (table.getState().pagination.pageIndex + 1),
-              table.getFilteredRowModel().rows.length
+              table.getFilteredRowModel().rows.length,
             )}{" "}
             of {table.getFilteredRowModel().rows.length} results
           </span>
         </div>
         <div className="pagination-controls">
           <button
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
             className="pagination-btn"
+            disabled={!table.getCanPreviousPage()}
+            onClick={() => table.previousPage()}
           >
             Previous
           </button>
@@ -221,22 +222,22 @@ export function DataTable<TData, TValue>({
               (pageIndex) => (
                 <button
                   key={pageIndex}
-                  onClick={() => table.setPageIndex(pageIndex)}
                   className={`page-btn ${
                     table.getState().pagination.pageIndex === pageIndex
                       ? "active"
                       : ""
                   }`}
+                  onClick={() => table.setPageIndex(pageIndex)}
                 >
                   {pageIndex + 1}
                 </button>
-              )
+              ),
             )}
           </div>
           <button
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
             className="pagination-btn"
+            disabled={!table.getCanNextPage()}
+            onClick={() => table.nextPage()}
           >
             Next
           </button>

@@ -1,4 +1,4 @@
-import { Field, ErrorMessage } from 'formik';
+import { Field, ErrorMessage } from "formik";
 
 interface FormTextareaProps {
   name: string;
@@ -16,28 +16,31 @@ export function FormTextarea({
   placeholder,
   required = false,
   rows = 3,
-  className = '',
+  className = "",
   disabled = false,
 }: FormTextareaProps) {
   return (
     <div className={`form-textarea ${className}`}>
-      <label htmlFor={name} className="block text-sm font-medium text-gray-700 mb-1">
+      <label
+        className="block text-sm font-medium text-gray-700 mb-1"
+        htmlFor={name}
+      >
         {label}
         {required && <span className="text-red-500 ml-1">*</span>}
       </label>
       <Field
         as="textarea"
+        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical disabled:bg-gray-100 disabled:cursor-not-allowed"
+        disabled={disabled}
         id={name}
         name={name}
         placeholder={placeholder}
         rows={rows}
-        disabled={disabled}
-        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical disabled:bg-gray-100 disabled:cursor-not-allowed"
       />
       <ErrorMessage
-        name={name}
-        component="div"
         className="text-red-500 text-sm mt-1"
+        component="div"
+        name={name}
       />
     </div>
   );

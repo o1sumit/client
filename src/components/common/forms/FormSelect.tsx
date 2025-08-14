@@ -1,4 +1,4 @@
-import { Field, ErrorMessage } from 'formik';
+import { Field, ErrorMessage } from "formik";
 
 interface SelectOption<T = string> {
   value: T;
@@ -20,22 +20,25 @@ export function FormSelect<T = string>({
   label,
   options,
   required = false,
-  placeholder = 'Select an option',
-  className = '',
+  placeholder = "Select an option",
+  className = "",
   disabled = false,
 }: FormSelectProps<T>) {
   return (
     <div className={`form-select ${className}`}>
-      <label htmlFor={name} className="block text-sm font-medium text-gray-700 mb-1">
+      <label
+        className="block text-sm font-medium text-gray-700 mb-1"
+        htmlFor={name}
+      >
         {label}
         {required && <span className="text-red-500 ml-1">*</span>}
       </label>
       <Field
         as="select"
+        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+        disabled={disabled}
         id={name}
         name={name}
-        disabled={disabled}
-        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
       >
         <option value="">{placeholder}</option>
         {options.map((option, index) => (
@@ -45,9 +48,9 @@ export function FormSelect<T = string>({
         ))}
       </Field>
       <ErrorMessage
-        name={name}
-        component="div"
         className="text-red-500 text-sm mt-1"
+        component="div"
+        name={name}
       />
     </div>
   );

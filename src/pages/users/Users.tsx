@@ -1,11 +1,13 @@
 import type { ColumnDef } from "@tanstack/react-table";
+import type { User } from "../../types/entities";
+import type { UserFormData } from "../../types/forms";
+import type { ApiResponse } from "../../types/api";
+
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
-import { usersAPI } from "../services/api";
-import type { User } from "../types/entities";
-import type { UserFormData } from "../types/forms";
-import type { ApiResponse } from "../types/api";
-import DataTable from "./DataTable";
+
+import { usersAPI } from "../../services/api";
+import DataTable from "../../components/DataTable";
 
 const Users = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -16,7 +18,6 @@ const Users = () => {
   const [formData, setFormData] = useState<UserFormData>({
     username: "",
     email: "",
-    password: "",
     role: "user",
     status: "active",
   });
@@ -36,7 +37,7 @@ const Users = () => {
 
         // Map to expected format if needed
         const mappedUsers = (usersData || []).map((user: any) => ({
-          id: user.id,
+          user_id: user.user_id,
           username: user.username,
           email: user.email,
           role: user?.account?.type || user.role,
@@ -60,8 +61,9 @@ const Users = () => {
   }, []);
 
   const handleAddUser = async () => {
-    if (!formData.username || !formData.email || !formData.password) {
-      toast.error("Username, email, and password are required!");
+    if (!formData.username || !formData.email) {
+      toast.error("Username and email are required!");
+
       return;
     }
 
@@ -78,7 +80,6 @@ const Users = () => {
         setFormData({
           username: "",
           email: "",
-          password: "",
           role: "user",
           status: "active",
         });
@@ -96,7 +97,6 @@ const Users = () => {
     setFormData({
       username: user.username,
       email: user.email,
-      password: "",
       role: user.role,
       status: user.status,
     });
@@ -106,11 +106,12 @@ const Users = () => {
   const handleUpdateUser = async () => {
     if (!editingUser || !formData.username || !formData.email) {
       toast.error("Username and email are required!");
+
       return;
     }
 
     try {
-      const response = await usersAPI.update(editingUser.id, formData);
+      const response = await usersAPI.update(editingUser.user_id, formData);
       const apiResponse = response.data as ApiResponse<User>;
       const updatedUser =
         apiResponse.success && apiResponse.data
@@ -119,12 +120,13 @@ const Users = () => {
 
       if (updatedUser) {
         setUsers(
-          users.map((user) => (user.id === editingUser.id ? updatedUser : user))
+          users.map((user) =>
+            user.user_id === editingUser.user_id ? updatedUser : user,
+          ),
         );
         setFormData({
           username: "",
           email: "",
-          password: "",
           role: "user",
           status: "active",
         });
@@ -144,8 +146,8 @@ const Users = () => {
     }
 
     try {
-      await usersAPI.delete(user.id);
-      setUsers(users.filter((u) => u.id !== user.id));
+      await usersAPI.delete(user.user_id);
+      setUsers(users.filter((u) => u.user_id !== user.user_id));
       toast.success("User deleted successfully!");
     } catch (error) {
       console.error("Failed to delete user:", error);
@@ -157,7 +159,7 @@ const Users = () => {
     const newStatus = user.status === "active" ? "inactive" : "active";
 
     try {
-      const response = await usersAPI.update(user.id, {
+      const response = await usersAPI.update(user.user_id, {
         ...user,
         status: newStatus,
       });
@@ -168,7 +170,9 @@ const Users = () => {
           : (response.data as unknown as User);
 
       if (updatedUser) {
-        setUsers(users.map((u) => (u.id === user.id ? updatedUser : u)));
+        setUsers(
+          users.map((u) => (u.user_id === user.user_id ? updatedUser : u)),
+        );
         toast.success(`User ${newStatus} successfully!`);
       }
     } catch (error) {
@@ -189,7 +193,7 @@ const Users = () => {
           : (response.data as unknown as User[]);
 
       const mappedUsers = (usersData || []).map((user: any) => ({
-        id: user.id,
+        user_id: user.user_id,
         username: user.username,
         email: user.email,
         role: user?.account?.type || user.role,
@@ -219,6 +223,7 @@ const Users = () => {
           {(() => {
             const username = row.getValue("username") as string;
             const atIndex = username.indexOf("@");
+
             return atIndex !== -1 ? username.slice(0, atIndex) : username;
           })()}
         </div>
@@ -237,6 +242,7 @@ const Users = () => {
       cell: ({ row }) => {
         console.log(row);
         const role = row.getValue("role") as string;
+
         return (
           <span className="inline-block px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded">
             {role.charAt(0).toUpperCase() + role.slice(1)}
@@ -249,11 +255,12 @@ const Users = () => {
       header: "Status",
       cell: ({ row }) => {
         const status = row.getValue("status") as string;
+
         return (
           <span
             className={`status-badge ${status}`}
-            onClick={() => handleStatusToggle(row.original)}
             style={{ cursor: "pointer" }}
+            onClick={() => handleStatusToggle(row.original)}
           >
             {status}
           </span>
@@ -274,7 +281,7 @@ const Users = () => {
   if (loading) {
     return (
       <div className="loading-spinner">
-        <div className="spinner"></div>
+        <div className="spinner" />
       </div>
     );
   }
@@ -289,15 +296,15 @@ const Users = () => {
         <div className="header-right">
           <button className="refresh-btn" onClick={handleRefreshData}>
             <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
               fill="none"
+              height="24"
               stroke="currentColor"
-              strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
+              strokeWidth="2"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
             >
               <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
               <path d="M21 3v5h-5" />
@@ -310,13 +317,13 @@ const Users = () => {
       </div>
 
       <DataTable
+        addButtonText="Add User"
         columns={columns}
         data={users}
-        onAdd={() => setShowAddModal(true)}
-        onEdit={handleEditUser}
-        onDelete={handleDeleteUser}
-        addButtonText="Add User"
         searchPlaceholder="Search users..."
+        onAdd={() => setShowAddModal(true)}
+        onDelete={handleDeleteUser}
+        onEdit={handleEditUser}
       />
 
       {/* Add/Edit Modal */}
@@ -333,7 +340,6 @@ const Users = () => {
                   setFormData({
                     username: "",
                     email: "",
-                    password: "",
                     role: "user",
                     status: "active",
                   });
@@ -346,23 +352,23 @@ const Users = () => {
               <div className="form-group">
                 <label>Username *</label>
                 <input
+                  placeholder="Enter username"
                   type="text"
                   value={formData.username}
                   onChange={(e) =>
                     setFormData({ ...formData, username: e.target.value })
                   }
-                  placeholder="Enter username"
                 />
               </div>
               <div className="form-group">
                 <label>Email *</label>
                 <input
+                  placeholder="Enter email"
                   type="email"
                   value={formData.email}
                   onChange={(e) =>
                     setFormData({ ...formData, email: e.target.value })
                   }
-                  placeholder="Enter email"
                 />
               </div>
               {/* <div className="form-group">
@@ -423,7 +429,6 @@ const Users = () => {
                   setFormData({
                     username: "",
                     email: "",
-                    password: "",
                     role: "user",
                     status: "active",
                   });

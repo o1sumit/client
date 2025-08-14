@@ -1,13 +1,9 @@
-import Accounts from "@components/Accounts";
 import AdminLayout from "@components/AdminLayout";
-import Applications from "@components/Applications";
 import Login from "@components/Login";
 import ManageAdmin from "@components/ManageAdmin";
 import PermissionRoute from "@components/PermissionRoute";
 import ProtectedRoute from "@components/ProtectedRoute";
-import RightsComponent from "@components/Rights";
 import UnauthorizedAccess from "@components/UnauthorizedAccess";
-import Users from "@components/Users";
 import PublicRoute from "@lib/auth/PublicRoute";
 import { AppDispatch, store } from "@store/index";
 import { setUser } from "@store/slices/authSlice";
@@ -21,6 +17,11 @@ import {
   BrowserRouter as Router,
   Routes,
 } from "react-router-dom";
+
+import Users from "@/pages/users/Users";
+import RightsComponent from "@/pages/rights/Rights";
+import Applications from "@/pages/applications/Applications";
+import Accounts from "@/pages/accounts/Accounts";
 import "./index.css";
 
 const DashboardComponent = () => {
@@ -28,13 +29,17 @@ const DashboardComponent = () => {
 };
 
 function App() {
-  const { isAuthenticated, isLoading, user } = useAuth();
+  const { isAuthenticated, isLoading, user, signinRedirect } = useAuth();
   const dispatch = useDispatch<AppDispatch>();
+
   useEffect(() => {
+    if (!isAuthenticated && !isLoading) {
+      signinRedirect();
+    }
     if (isAuthenticated && user) {
       dispatch(setUser(user));
     }
-  }, [isAuthenticated, user]);
+  }, [isAuthenticated, user, isLoading]);
 
   return (
     <Provider store={store}>
@@ -43,39 +48,39 @@ function App() {
           <Toaster position="top-right" />
           <Routes>
             <Route
-              path="/login"
               element={
                 <PublicRoute>
                   <Login />
                 </PublicRoute>
               }
+              path="/login"
             />
             <Route
-              path="/"
               element={
                 <ProtectedRoute>
                   <AdminLayout />
                 </ProtectedRoute>
               }
+              path="/"
             >
               <Route index element={<DashboardComponent />} />
-              <Route path="applications" element={<Applications />} />
-              <Route path="rights" element={<RightsComponent />} />
-              <Route path="users" element={<Users />} />
-              <Route path="accounts" element={<Accounts />} />
+              <Route element={<Applications />} path="applications" />
+              <Route element={<RightsComponent />} path="rights" />
+              <Route element={<Users />} path="users" />
+              <Route element={<Accounts />} path="accounts" />
               <Route
-                path="manage-admin"
                 element={
                   <PermissionRoute
-                    requiredPermission="view_admin_management"
                     fallbackComponent={<UnauthorizedAccess />}
+                    requiredPermission="view_admin_management"
                   >
                     <ManageAdmin />
                   </PermissionRoute>
                 }
+                path="manage-admin"
               />
             </Route>
-            <Route path="*" element={<Navigate to="/" replace />} />
+            <Route element={<Navigate replace to="/" />} path="*" />
           </Routes>
         </div>
       </Router>

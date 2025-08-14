@@ -1,11 +1,13 @@
-import { useState, useEffect } from "react";
-import { toast } from "react-hot-toast";
+import type { ApiResponse } from "@/types/api";
+import type { AccountFormData } from "@/types/forms";
 import type { ColumnDef } from "@tanstack/react-table";
-import DataTable from "./DataTable";
-import { accountsAPI } from "../services/api";
-import type { AccountFormData } from "../types/forms";
-import type { ApiResponse } from "../types/api";
-import { AccountStatus, AccountType } from "@/types/entities";
+
+import DataTable from "@components/DataTable";
+import { accountsAPI, usersAPI } from "@services/api";
+import { useEffect, useState } from "react";
+import { toast } from "react-hot-toast";
+
+import { AccountStatus, AccountType, User } from "@/types/entities";
 
 // Local UI model for this screen
 type UIAccount = {
@@ -37,8 +39,9 @@ const Accounts = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showSharingModal, setShowSharingModal] = useState(false);
   const [editingAccount, setEditingAccount] = useState<UIAccount | null>(null);
+  const [users, setUsers] = useState<User[]>([]);
   const [selectedAccount, setSelectedAccount] = useState<UIAccount | null>(
-    null
+    null,
   );
 
   const [formData, setFormData] = useState<AccountFormData>({
@@ -65,9 +68,16 @@ const Accounts = () => {
       try {
         setLoading(true);
         const response = await accountsAPI.getAll();
+        // get all users
+        const usersResponse = await usersAPI.getAll();
+
         console.log("=== RAW API RESPONSE ===");
         console.log("Response:", response);
         console.log("Response.data:", response.data);
+        const usersData = usersResponse.data as ApiResponse<User[]>;
+        const users = usersData.success && usersData.data ? usersData.data : [];
+
+        setUsers(users);
 
         // Handle new API response format: { success: true, data: [...], message: "..." }
         const apiResponse = response.data as ApiResponse<any[]>;
@@ -102,8 +112,10 @@ const Accounts = () => {
     try {
       const response = await accountsAPI.create(formData);
       const newAccount = response.data?.data;
+
       if (newAccount) {
         const uiAccount = mapToUIAccount(newAccount);
+
         setAccounts((prev) => [uiAccount, ...prev]);
         toast.success("Account created successfully");
         setShowAddModal(false);
@@ -139,15 +151,17 @@ const Accounts = () => {
     try {
       const response = await accountsAPI.update(
         editingAccount.account_id,
-        formData
+        formData,
       );
       const updatedAccount = response.data?.data;
+
       if (updatedAccount) {
         const uiAccount = mapToUIAccount(updatedAccount);
+
         setAccounts((prev) =>
           prev.map((acc) =>
-            acc.account_id === editingAccount.account_id ? uiAccount : acc
-          )
+            acc.account_id === editingAccount.account_id ? uiAccount : acc,
+          ),
         );
         toast.success("Account updated successfully");
         setShowAddModal(false);
@@ -173,7 +187,7 @@ const Accounts = () => {
       try {
         await accountsAPI.delete(account.account_id);
         setAccounts((prev) =>
-          prev.filter((acc) => acc.account_id !== account.account_id)
+          prev.filter((acc) => acc.account_id !== account.account_id),
         );
         toast.success("Account deleted successfully");
       } catch (error) {
@@ -186,7 +200,7 @@ const Accounts = () => {
   const handleViewAccount = (account: UIAccount) => {
     console.log("=== OPENING SHARE MODAL ===");
     console.log("Account:", account);
-    console.log("Available users:", availableUsers);
+    console.log("Available users:", users);
 
     // Verify the account has sharedAccounts field
 
@@ -206,6 +220,7 @@ const Accounts = () => {
       console.log("Current sharingData:", sharingData);
 
       const initialSharedAccounts: string[] = [];
+
       console.log("Setting initial sharedAccounts:", initialSharedAccounts);
 
       setSharingData({
@@ -225,10 +240,12 @@ const Accounts = () => {
     });
 
     try {
-      // Call the API to update account sharing
-      const response = await accountsAPI.update(selectedAccount.account_id, {
-        sharedAccounts: sharingData.sharedAccounts,
-      } as unknown as any);
+      debugger;
+      // Call the API to update account sharing and replace pointing account_id with the selected account_id
+      const response = await usersAPI.update(sharingData.sharedAccounts[0], {
+        // ...users.find((user) => user.user_id === sharingData.sharedAccounts[0]),
+        account_id: selectedAccount.account_id,
+      });
 
       console.log("API response:", response);
       console.log("Response data:", response.data);
@@ -239,8 +256,8 @@ const Accounts = () => {
           prev.map((acc) =>
             acc.account_id === selectedAccount.account_id
               ? { ...acc, sharedAccounts: sharingData.sharedAccounts }
-              : acc
-          )
+              : acc,
+          ),
         );
         toast.success("Account sharing updated successfully");
         setShowSharingModal(false);
@@ -256,6 +273,7 @@ const Accounts = () => {
       const axiosError = error as {
         response?: { data?: unknown; status?: number };
       };
+
       console.error("Error response:", axiosError.response);
       console.error("Error data:", axiosError.response?.data);
       console.error("Error status:", axiosError.response?.status);
@@ -342,6 +360,7 @@ const Accounts = () => {
               return "chip-badge chip-type-personal";
           }
         };
+
         return <span className={getTypeClass(type)}>{type}</span>;
       },
     },
@@ -362,6 +381,7 @@ const Accounts = () => {
               return "chip-badge chip-status-active";
           }
         };
+
         return <span className={getStatusClass(status)}>{status}</span>;
       },
     },
@@ -391,7 +411,7 @@ const Accounts = () => {
   if (loading) {
     return (
       <div className="loading-spinner">
-        <div className="spinner"></div>
+        <div className="spinner" />
       </div>
     );
   }
@@ -406,15 +426,15 @@ const Accounts = () => {
         <div className="header-right">
           <button className="refresh-btn" onClick={handleRefreshData}>
             <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
               fill="none"
+              height="24"
               stroke="currentColor"
-              strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
+              strokeWidth="2"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
             >
               <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
               <path d="M21 3v5h-5" />
@@ -457,14 +477,14 @@ const Accounts = () => {
       </div>
 
       <DataTable
+        addButtonText="Add Account"
         columns={columns}
         data={accounts}
-        onAdd={() => setShowAddModal(true)}
-        onEdit={handleEditAccount}
-        onDelete={handleDeleteAccount}
-        onView={handleViewAccount}
-        addButtonText="Add Account"
         searchPlaceholder="Search accounts..."
+        onAdd={() => setShowAddModal(true)}
+        onDelete={handleDeleteAccount}
+        onEdit={handleEditAccount}
+        onView={handleViewAccount}
       />
 
       {/* Add/Edit Modal */}
@@ -494,12 +514,12 @@ const Accounts = () => {
               <div className="form-group">
                 <label>Name</label>
                 <input
+                  placeholder="Enter account name"
                   type="text"
                   value={formData.account_name}
                   onChange={(e) =>
                     setFormData({ ...formData, account_name: e.target.value })
                   }
-                  placeholder="Enter account name"
                 />
               </div>
               {/* <div className="form-group">
@@ -604,8 +624,8 @@ const Accounts = () => {
       {showSharingModal && selectedAccount && (
         <div className="modal-overlay">
           <div
-            className="modal"
             key={`share-modal-${selectedAccount.account_id}`}
+            className="modal"
           >
             <div className="modal-header">
               <h2>Share Account: {selectedAccount.account_name}</h2>
@@ -623,33 +643,35 @@ const Accounts = () => {
               <div className="form-group">
                 <label>Share with Users</label>
                 <div className="users-list">
-                  {availableUsers.map((user) => {
+                  {users.map((user) => {
                     const isShared = sharingData.sharedAccounts.includes(
-                      user.user_id
+                      user.user_id,
                     );
+
                     console.log(
-                      `🔍 Checkbox for ${user.user_name} (${user.user_id}):`
+                      `🔍 Checkbox for ${user.username} (${user.user_id}):`,
                     );
                     console.log(
                       `  - sharingData.sharedAccounts:`,
-                      sharingData.sharedAccounts
+                      sharingData.sharedAccounts,
                     );
                     console.log(`  - user.id: ${user.user_id}`);
                     console.log(
                       `  - includes check: ${sharingData.sharedAccounts.includes(
-                        user.user_id
-                      )}`
+                        user.user_id,
+                      )}`,
                     );
                     console.log(`  - isShared: ${isShared}`);
+
                     return (
                       <label key={user.user_id} className="user-checkbox">
                         <input
-                          type="checkbox"
                           checked={isShared}
+                          type="checkbox"
                           onChange={() => handleUserToggle(user.user_id)}
                         />
                         <span style={{ marginLeft: "8px" }}>
-                          {user.user_name}{" "}
+                          {user.username}{" "}
                           {isShared && (
                             <span
                               style={{ color: "green", fontWeight: "bold" }}
@@ -685,10 +707,11 @@ const Accounts = () => {
                         Users:{" "}
                         {sharingData.sharedAccounts
                           .map((userId) => {
-                            const user = availableUsers.find(
-                              (u) => u.user_id === userId
+                            const user = users.find(
+                              (u) => u.user_id === userId,
                             );
-                            return user ? user.user_name : userId;
+
+                            return user ? user.username : userId;
                           })
                           .join(", ")}
                       </div>

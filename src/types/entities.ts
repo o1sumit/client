@@ -16,23 +16,21 @@ export interface Application {
   application_name: string;
   client_secret: string;
   version: string;
-  // description?: string;
-  // applicationSecret: string;
-  // status: ApplicationStatus;
+  createdBy: { username: string };
   created_on: string;
   updated_on: string;
 }
 
 // User entity interface
 export interface User {
-  id: string;
+  user_id: string;
   username: string;
   email: string;
   role: UserRole;
   status: UserStatus;
   account_id: string;
-  createdAt: string;
-  updatedAt: string;
+  created_on: string;
+  updated_on: string;
 }
 
 // Account entity interface
@@ -43,7 +41,7 @@ export interface Account {
   status: string;
   created_on: string;
   updated_on: string;
-  // users?: User[];
+  createdBy: { username: string };
 }
 
 // Rights entity interface
@@ -56,7 +54,7 @@ export interface Rights {
   rights_code: string;
   expires_on?: string;
   granted_by?: string;
-  // status: RightStatus;
+  createdBy: { username: string };
   created_on: string;
   updated_on: string;
 }

@@ -31,8 +31,8 @@ export interface AuthResponse {
       id: string;
       username: string;
       email: string;
-      role: 'admin' | 'user' | 'manager';
-      status: 'active' | 'inactive';
+      role: "admin" | "user" | "manager";
+      status: "active" | "inactive";
       accountId: string;
       createdAt: string;
       updatedAt: string;
@@ -49,8 +49,8 @@ export interface ProfileResponse {
       id: string;
       username: string;
       email: string;
-      role: 'admin' | 'user' | 'manager';
-      status: 'active' | 'inactive';
+      role: "admin" | "user" | "manager";
+      status: "active" | "inactive";
       accountId: string;
       createdAt: string;
       updatedAt: string;
@@ -67,8 +67,8 @@ export interface VerifyResponse {
       id: string;
       username: string;
       email: string;
-      role: 'admin' | 'user' | 'manager';
-      status: 'active' | 'inactive';
+      role: "admin" | "user" | "manager";
+      status: "active" | "inactive";
       accountId: string;
       createdAt: string;
       updatedAt: string;
@@ -83,7 +83,7 @@ export interface LegacyAuthResponse {
     id: string;
     username: string;
     email: string;
-    role: 'admin' | 'user';
+    role: "admin" | "user";
     createdAt: string;
     updatedAt: string;
   };
@@ -96,7 +96,7 @@ export interface LegacyProfileResponse {
     id: string;
     username: string;
     email: string;
-    role: 'admin' | 'user';
+    role: "admin" | "user";
     createdAt: string;
     updatedAt: string;
   };
@@ -109,7 +109,7 @@ export interface LegacyVerifyResponse {
     id: string;
     username: string;
     email: string;
-    role: 'admin' | 'user';
+    role: "admin" | "user";
     createdAt: string;
     updatedAt: string;
   };
@@ -126,5 +126,5 @@ export interface RequestConfig {
 // API endpoint configuration
 export interface ApiEndpoint {
   url: string;
-  method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
+  method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
 }

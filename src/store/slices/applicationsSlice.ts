@@ -1,55 +1,63 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { applicationsAPI } from "../../services/api";
 import type { Application } from "../../services/api";
+
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+
+import { applicationsAPI } from "../../services/api";
 
 // Async thunks
 export const fetchApplications = createAsyncThunk(
   "applications/fetchApplications",
   async (params?: any) => {
     const response = await applicationsAPI.getAll(params);
+
     return response.data?.data || [];
-  }
+  },
 );
 
 export const createApplication = createAsyncThunk(
   "applications/createApplication",
   async (applicationData: Partial<Application>) => {
     const response = await applicationsAPI.create(applicationData);
+
     return response.data?.data;
-  }
+  },
 );
 
 export const updateApplication = createAsyncThunk(
   "applications/updateApplication",
   async ({ id, data }: { id: string; data: Partial<Application> }) => {
     const response = await applicationsAPI.update(id, data);
+
     return response.data?.data;
-  }
+  },
 );
 
 export const deleteApplication = createAsyncThunk(
   "applications/deleteApplication",
   async (id: string) => {
     await applicationsAPI.delete(id);
+
     return id;
-  }
+  },
 );
 
 export const toggleApplicationStatus = createAsyncThunk(
   "applications/toggleStatus",
   async (id: string) => {
     const response = await applicationsAPI.toggleStatus(id);
+
     return response.data?.data;
-  }
+  },
 );
 
 export const getActiveApplications = createAsyncThunk(
   "applications/getActive",
   async () => {
     const response = await applicationsAPI.getActive();
+
     return response.data?.data || [];
-  }
+  },
 );
 
 // State interface
@@ -97,7 +105,7 @@ const applicationsSlice = createSlice({
         (state, action: PayloadAction<Application[]>) => {
           state.loading = false;
           state.applications = action.payload;
-        }
+        },
       )
       .addCase(fetchApplications.rejected, (state, action) => {
         state.loading = false;
@@ -117,7 +125,7 @@ const applicationsSlice = createSlice({
           if (action.payload) {
             state.applications.unshift(action.payload);
           }
-        }
+        },
       )
       .addCase(createApplication.rejected, (state, action) => {
         state.loading = false;
@@ -136,13 +144,14 @@ const applicationsSlice = createSlice({
           state.loading = false;
           if (action.payload) {
             const index = state.applications.findIndex(
-              (app) => app.id === action.payload!.id
+              (app) => app.application_id === action.payload!.application_id,
             );
+
             if (index !== -1) {
               state.applications[index] = action.payload;
             }
           }
-        }
+        },
       )
       .addCase(updateApplication.rejected, (state, action) => {
         state.loading = false;
@@ -160,9 +169,9 @@ const applicationsSlice = createSlice({
         (state, action: PayloadAction<string>) => {
           state.loading = false;
           state.applications = state.applications.filter(
-            (app) => app.id !== action.payload
+            (app) => app.application_id !== action.payload,
           );
-        }
+        },
       )
       .addCase(deleteApplication.rejected, (state, action) => {
         state.loading = false;
@@ -181,13 +190,14 @@ const applicationsSlice = createSlice({
           state.loading = false;
           if (action.payload) {
             const index = state.applications.findIndex(
-              (app) => app.id === action.payload!.id
+              (app) => app.application_id === action.payload!.application_id,
             );
+
             if (index !== -1) {
               state.applications[index] = action.payload;
             }
           }
-        }
+        },
       )
       .addCase(toggleApplicationStatus.rejected, (state, action) => {
         state.loading = false;
@@ -206,7 +216,7 @@ const applicationsSlice = createSlice({
         (state, action: PayloadAction<Application[]>) => {
           state.loading = false;
           state.activeApplications = action.payload;
-        }
+        },
       )
       .addCase(getActiveApplications.rejected, (state, action) => {
         state.loading = false;
