@@ -75,7 +75,7 @@ api.interceptors.request.use(
     }
 
     return Promise.reject(error);
-  },
+  }
 );
 
 // Response interceptor to handle auth errors
@@ -89,7 +89,7 @@ api.interceptors.response.use(
     console.error(
       "API Response Error:",
       error.response?.status,
-      error.response?.data,
+      error.response?.data
     );
     if (error.response?.status === 401) {
       localStorage.clear();
@@ -98,7 +98,7 @@ api.interceptors.response.use(
     }
 
     return Promise.reject(error);
-  },
+  }
 );
 
 // Auth API - Uses centralized configuration
@@ -119,6 +119,7 @@ export const authAPI = {
     currentPassword: string;
     newPassword: string;
   }) => api.post("/auth/change-password", passwords),
+  getUser: () => api.get<ApiResponse<User>>(`/checkUser`),
 };
 
 // Applications API - Uses centralized configuration
@@ -178,7 +179,7 @@ export const accountsAPI = {
       targetAccountId: string;
       permissions: Permission[];
       expiresAt?: string;
-    },
+    }
   ) => api.post<ApiResponse<AccountSharing>>(`/accounts/${id}/share`, data),
   updateSharing: (sharingId: string, data: Partial<AccountSharing>) =>
     api.put<ApiResponse<AccountSharing>>(`/accounts/share/${sharingId}`, data),
@@ -217,7 +218,7 @@ export const accountSharingAPI = {
     api.get<ApiResponse<AccountSharing[]>>("/account-sharing/pending"),
   getByAccount: (accountId: string) =>
     api.get<ApiResponse<AccountSharing[]>>(
-      `/account-sharing/account/${accountId}`,
+      `/account-sharing/account/${accountId}`
     ),
 };
 
@@ -236,7 +237,7 @@ export const usersAPI = {
     passwords: {
       currentPassword: string;
       newPassword: string;
-    },
+    }
   ) => api.post<ApiResponse>(`/users/${id}/change-password`, passwords),
 };
 
@@ -263,7 +264,7 @@ export const appXAPI = {
     api.post<ApiResponse>(`/app-x/validate-rights`, data),
   getUserPermissions: (userId: string, applicationId: string) =>
     api.get<ApiResponse>(
-      `/app-x/user/${userId}/application/${applicationId}/permissions`,
+      `/app-x/user/${userId}/application/${applicationId}/permissions`
     ),
   getUserApplications: (userId: string) =>
     api.get<ApiResponse>(`/app-x/user/${userId}/applications`),
@@ -308,7 +309,7 @@ export const adminManagementAPI = {
       role?: AdminRole;
       permissions?: string[];
       status?: "active" | "inactive";
-    },
+    }
   ) => api.put<ApiResponse<AdminUser>>(`/admin-management/${id}`, data),
 
   toggleStatus: (id: string) =>

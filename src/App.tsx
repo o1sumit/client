@@ -23,6 +23,7 @@ import RightsComponent from "@/pages/rights/Rights";
 import Applications from "@/pages/applications/Applications";
 import Accounts from "@/pages/accounts/Accounts";
 import "./index.css";
+import { authAPI } from "@services/api";
 
 const DashboardComponent = () => {
   return <h1>Dashboard</h1>;
@@ -37,6 +38,10 @@ function App() {
       signinRedirect();
     }
     if (isAuthenticated && user) {
+      console.log("user", user);
+      // debugger;
+      const userData = authAPI.getUser();
+      console.log("userData", userData);
       dispatch(setUser(user));
     }
   }, [isAuthenticated, user, isLoading]);

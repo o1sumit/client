@@ -41,7 +41,7 @@ const Accounts = () => {
   const [editingAccount, setEditingAccount] = useState<UIAccount | null>(null);
   const [users, setUsers] = useState<User[]>([]);
   const [selectedAccount, setSelectedAccount] = useState<UIAccount | null>(
-    null,
+    null
   );
 
   const [formData, setFormData] = useState<AccountFormData>({
@@ -151,7 +151,7 @@ const Accounts = () => {
     try {
       const response = await accountsAPI.update(
         editingAccount.account_id,
-        formData,
+        formData
       );
       const updatedAccount = response.data?.data;
 
@@ -160,8 +160,8 @@ const Accounts = () => {
 
         setAccounts((prev) =>
           prev.map((acc) =>
-            acc.account_id === editingAccount.account_id ? uiAccount : acc,
-          ),
+            acc.account_id === editingAccount.account_id ? uiAccount : acc
+          )
         );
         toast.success("Account updated successfully");
         setShowAddModal(false);
@@ -187,7 +187,7 @@ const Accounts = () => {
       try {
         await accountsAPI.delete(account.account_id);
         setAccounts((prev) =>
-          prev.filter((acc) => acc.account_id !== account.account_id),
+          prev.filter((acc) => acc.account_id !== account.account_id)
         );
         toast.success("Account deleted successfully");
       } catch (error) {
@@ -256,8 +256,8 @@ const Accounts = () => {
           prev.map((acc) =>
             acc.account_id === selectedAccount.account_id
               ? { ...acc, sharedAccounts: sharingData.sharedAccounts }
-              : acc,
-          ),
+              : acc
+          )
         );
         toast.success("Account sharing updated successfully");
         setShowSharingModal(false);
@@ -333,16 +333,6 @@ const Accounts = () => {
         </div>
       ),
     },
-    // {
-    //   accessorKey: "email",
-    //   header: "Email",
-    //   cell: ({ row }) => {
-    //     const email = row.getValue("email") as string;
-    //     return (
-    //       <div className="text-sm text-gray-500">{email || "No email"}</div>
-    //     );
-    //   },
-    // },
     {
       accessorKey: "account_type",
       header: "Account Type",
@@ -444,36 +434,6 @@ const Accounts = () => {
             Refresh
           </button>
         </div>
-        {/* <div className="header-actions">
-          <button
-            className="refresh-btn"
-            onClick={() => {
-              console.log("Current accounts state:", accounts);
-              console.log("Available users:", availableUsers);
-            }}
-            style={{ marginRight: "10px" }}
-          >
-            Debug Info
-          </button>
-          <button
-            className="refresh-btn"
-            onClick={() => {
-              // Test with the first account that has sharing data
-              const testAccount = accounts.find(
-                (acc) => acc.sharedAccounts && acc.sharedAccounts.length > 0
-              );
-              if (testAccount) {
-                console.log("Testing share modal with:", testAccount);
-                handleViewAccount(testAccount);
-              } else {
-                console.log("No accounts with sharing data found");
-              }
-            }}
-            style={{ marginRight: "10px" }}
-          >
-            Test Share Modal
-          </button>
-        </div> */}
       </div>
 
       <DataTable
@@ -522,41 +482,6 @@ const Accounts = () => {
                   }
                 />
               </div>
-              {/* <div className="form-group">
-                <label>Account ID</label>
-                <input
-                  type="text"
-                  value={formData.accountId}
-                  onChange={(e) =>
-                    setFormData({ ...formData, accountId: e.target.value })
-                  }
-                  placeholder="Enter account ID"
-                />
-              </div> */}
-              {/* <div className="form-group">
-                <label>Email</label>
-                <input
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
-                  }
-                  placeholder="Enter account email"
-                />
-              </div> */}
-              {/* <div className="form-group">
-                <label>Description</label>
-                <textarea
-                  value={formData.account_description}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      account_description: e.target.value,
-                    })
-                  }
-                  placeholder="Enter account description"
-                />
-              </div> */}
               <div className="form-group">
                 <label>Account Type</label>
                 <select
@@ -645,21 +570,21 @@ const Accounts = () => {
                 <div className="users-list">
                   {users.map((user) => {
                     const isShared = sharingData.sharedAccounts.includes(
-                      user.user_id,
+                      user.user_id
                     );
 
                     console.log(
-                      `🔍 Checkbox for ${user.username} (${user.user_id}):`,
+                      `🔍 Checkbox for ${user.username} (${user.user_id}):`
                     );
                     console.log(
                       `  - sharingData.sharedAccounts:`,
-                      sharingData.sharedAccounts,
+                      sharingData.sharedAccounts
                     );
                     console.log(`  - user.id: ${user.user_id}`);
                     console.log(
                       `  - includes check: ${sharingData.sharedAccounts.includes(
-                        user.user_id,
-                      )}`,
+                        user.user_id
+                      )}`
                     );
                     console.log(`  - isShared: ${isShared}`);
 
@@ -708,7 +633,7 @@ const Accounts = () => {
                         {sharingData.sharedAccounts
                           .map((userId) => {
                             const user = users.find(
-                              (u) => u.user_id === userId,
+                              (u) => u.user_id === userId
                             );
 
                             return user ? user.username : userId;
