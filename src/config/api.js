@@ -17,7 +17,7 @@ const API_CONFIG = {
   development: {
     baseURL: "/api", // Uses Vite proxy
   },
-  
+
   production: {
     // baseURL: process.env.VITE_API_URL || "/api",
   },
@@ -26,7 +26,7 @@ const API_CONFIG = {
   getConfig() {
     const env = process.env.NODE_ENV || "development";
     return this[env] || this.development;
-  }
+  },
 };
 
 export default API_CONFIG;

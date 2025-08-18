@@ -15,6 +15,7 @@ import rightsReducer from "./slices/rightsSlice";
 import accountsReducer from "./slices/accountsSlice";
 import usersReducer from "./slices/usersSlice";
 import adminManagementReducer from "./slices/adminManagementSlice";
+import inviteModalReducer from "./slices/inviteModalSlice";
 
 const persistConfig = {
   key: "root",
@@ -29,6 +30,7 @@ const rootReducer = combineReducers({
   accounts: accountsReducer,
   users: usersReducer,
   adminManagement: adminManagementReducer,
+  inviteModal: inviteModalReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

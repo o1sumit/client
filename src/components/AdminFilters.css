@@ -56,7 +56,8 @@
 
 .search-input {
   width: 100%;
-  padding: var(--ms-spacing-sm) var(--ms-spacing-md) var(--ms-spacing-sm) calc(var(--ms-spacing-md) + 20px);
+  padding: var(--ms-spacing-sm) var(--ms-spacing-md) var(--ms-spacing-sm)
+    calc(var(--ms-spacing-md) + 20px);
   border: 1px solid var(--ms-border-primary);
   border-radius: var(--ms-radius-md);
   font-size: var(--ms-font-size-sm);
@@ -234,12 +235,12 @@
   .admin-filters {
     padding: var(--ms-spacing-lg);
   }
-  
+
   .filters-container {
     grid-template-columns: 1fr;
     gap: var(--ms-spacing-md);
   }
-  
+
   .search-input {
     font-size: 16px; /* Prevents zoom on iOS */
   }
@@ -249,11 +250,11 @@
   .admin-filters {
     padding: var(--ms-spacing-md);
   }
-  
+
   .filters-container {
     gap: var(--ms-spacing-sm);
   }
-  
+
   .filter-tags {
     flex-direction: column;
     align-items: flex-start;

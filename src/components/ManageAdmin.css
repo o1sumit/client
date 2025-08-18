@@ -94,8 +94,12 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Empty State */
@@ -129,17 +133,17 @@
   .manage-admin {
     padding: var(--ms-spacing-lg);
   }
-  
+
   .manage-admin-header {
     flex-direction: column;
     gap: var(--ms-spacing-lg);
     align-items: stretch;
   }
-  
+
   .header-content h1 {
     font-size: var(--ms-font-size-2xl);
   }
-  
+
   .header-content p {
     font-size: var(--ms-font-size-sm);
   }
@@ -149,13 +153,12 @@
   .manage-admin {
     padding: var(--ms-spacing-md);
   }
-  
+
   .manage-admin-header {
     padding: var(--ms-spacing-lg);
   }
-  
+
   .header-content h1 {
     font-size: var(--ms-font-size-xl);
   }
 }
-

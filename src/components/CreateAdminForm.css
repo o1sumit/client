@@ -226,15 +226,15 @@
   .form-row {
     grid-template-columns: 1fr;
   }
-  
+
   .permissions-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .form-actions {
     flex-direction: column;
   }
-  
+
   .btn {
     width: 100%;
   }

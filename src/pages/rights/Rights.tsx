@@ -8,14 +8,15 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { toast } from "react-hot-toast";
 import { useSelector } from "react-redux";
+import { Eye } from "lucide-react";
 
 import DataTable from "../../components/DataTable";
+
 import JsonModal from "@/components/json/JsonModal";
 import "./RightsChips.css";
 
 import { RightsRow } from "@/types/rights.type";
 import { accountsAPI, applicationsAPI, rightsAPI } from "@/services/api";
-import { Eye } from "lucide-react";
 
 // Simplified response extraction
 const extractData = (response: any) => {
@@ -28,6 +29,7 @@ const extractData = (response: any) => {
 const getExpiryFromRightsCode = (rightsCode: string): string | undefined => {
   try {
     const parsed = JSON.parse(rightsCode || "{}");
+
     return typeof parsed.expiry === "string" ? parsed.expiry : undefined;
   } catch {
     return undefined;
@@ -38,7 +40,7 @@ const getExpiryFromRightsCode = (rightsCode: string): string | undefined => {
 const toRow = (
   r: any,
   applications: Application[],
-  accounts: Account[]
+  accounts: Account[],
 ): RightsRow => ({
   rights_id: r.rights_id,
   application_id: r.application_id,
@@ -101,7 +103,7 @@ const RightsComponent = () => {
     null | "expiry" | "username" | "totalNumberUsers"
   >(null);
   const [editingCustomIndex, setEditingCustomIndex] = useState<number | null>(
-    null
+    null,
   );
 
   // Formik setup
@@ -128,8 +130,9 @@ const RightsComponent = () => {
                     const hasAny =
                       !!(val && String(val).trim()) ||
                       !!(siblingValue && String(siblingValue).trim());
+
                     return hasAny ? !!(val && String(val).trim()) : true;
-                  }
+                  },
                 ),
                 value: Yup.string().test(
                   "value-required",
@@ -139,15 +142,16 @@ const RightsComponent = () => {
                     const hasAny =
                       !!(val && String(val).trim()) ||
                       !!(siblingKey && String(siblingKey).trim());
+
                     return hasAny ? !!(val && String(val).trim()) : true;
-                  }
+                  },
                 ),
-              })
+              }),
             )
             .required(),
         }),
       }),
-    []
+    [],
   );
 
   const formik = useFormik<ExtendedRightsFormData>({
@@ -165,18 +169,19 @@ const RightsComponent = () => {
         if (editingRight) {
           const response = await rightsAPI.update(
             editingRight.rights_id,
-            submitData
+            submitData,
           );
           const updatedRaw = extractData(response)[0] || response.data;
           const updatedRight = toRow(
             updatedRaw,
             availableApplications,
-            availableAccounts
+            availableAccounts,
           );
+
           setRights((prev) =>
             prev.map((right) =>
-              right.rights_id === editingRight.rights_id ? updatedRight : right
-            )
+              right.rights_id === editingRight.rights_id ? updatedRight : right,
+            ),
           );
           toast.success("Right updated successfully!");
         } else {
@@ -185,8 +190,9 @@ const RightsComponent = () => {
           const newRight = toRow(
             newRightRaw,
             availableApplications,
-            availableAccounts
+            availableAccounts,
           );
+
           setRights((prev) => [...prev, newRight]);
           toast.success("Right added successfully!");
         }
@@ -266,9 +272,11 @@ const RightsComponent = () => {
                   backgroundColor: "#f0f0f0",
                   color: "#666",
                 }}
+                title="View Rights Code"
                 onClick={() => {
                   try {
                     const jsonData = JSON.parse(rightsCode);
+
                     setFormData((prev) => ({
                       ...prev,
                       rightsCodeData: jsonData,
@@ -279,7 +287,6 @@ const RightsComponent = () => {
                     setShowJsonModal(true);
                   }
                 }}
-                title="View Rights Code"
               >
                 <Eye size={16} />
               </button>
@@ -325,7 +332,7 @@ const RightsComponent = () => {
         },
       },
     ],
-    [getPermissionClass]
+    [getPermissionClass],
   );
 
   // Consolidated data loading
@@ -384,7 +391,7 @@ const RightsComponent = () => {
 
       return JSON.stringify(result);
     },
-    []
+    [],
   );
 
   // Helper function to parse JSON string back to RightsCodeData
@@ -416,13 +423,14 @@ const RightsComponent = () => {
         return emptyRightsCodeData;
       }
     },
-    []
+    [],
   );
 
   // Function to add a new custom field (Formik as source of truth)
   const addCustomField = useCallback(() => {
     const list = formik.values.rightsCodeData.customFields || [];
     const nextList = [...list, { key: "", value: "" }];
+
     formik.setFieldValue("rightsCodeData.customFields", nextList);
     setEditingCustomIndex(list.length);
   }, [formik]);
@@ -432,9 +440,10 @@ const RightsComponent = () => {
     (index: number) => {
       const list = formik.values.rightsCodeData.customFields || [];
       const nextList = list.filter((_, i) => i !== index);
+
       formik.setFieldValue("rightsCodeData.customFields", nextList);
     },
-    [formik]
+    [formik],
   );
 
   // Function to update custom field
@@ -442,16 +451,18 @@ const RightsComponent = () => {
     (index: number, field: "key" | "value", newValue: string) => {
       const list = formik.values.rightsCodeData.customFields || [];
       const nextList = list.map((item, i) =>
-        i === index ? { ...item, [field]: newValue } : item
+        i === index ? { ...item, [field]: newValue } : item,
       );
+
       formik.setFieldValue("rightsCodeData.customFields", nextList);
     },
-    [formik]
+    [formik],
   );
 
   const handleAddRight = useCallback(async () => {
     if (!formData.application_id || !formData.account_id) {
       toast.error("Application and Account are required!");
+
       return;
     }
 
@@ -461,6 +472,7 @@ const RightsComponent = () => {
       !formData.rightsCodeData.totalNumberUsers
     ) {
       toast.error("Expiry, Username, and Total Number of Users are required!");
+
       return;
     }
 
@@ -477,7 +489,7 @@ const RightsComponent = () => {
       const newRight = toRow(
         newRightRaw,
         availableApplications,
-        availableAccounts
+        availableAccounts,
       );
 
       setRights((prev) => [...prev, newRight]);
@@ -505,12 +517,13 @@ const RightsComponent = () => {
       });
       setShowAddModal(true);
     },
-    [parseJSONToRightsCode]
+    [parseJSONToRightsCode],
   );
 
   const handleUpdateRight = useCallback(async () => {
     if (!editingRight || !formData.application_id || !formData.account_id) {
       toast.error("Application and Account are required!");
+
       return;
     }
 
@@ -520,6 +533,7 @@ const RightsComponent = () => {
       !formData.rightsCodeData.totalNumberUsers
     ) {
       toast.error("Expiry, Username, and Total Number of Users are required!");
+
       return;
     }
 
@@ -533,19 +547,19 @@ const RightsComponent = () => {
 
       const response = await rightsAPI.update(
         editingRight.rights_id,
-        submitData
+        submitData,
       );
       const updatedRaw = extractData(response)[0] || response.data;
       const updatedRight = toRow(
         updatedRaw,
         availableApplications,
-        availableAccounts
+        availableAccounts,
       );
 
       setRights((prev) =>
         prev.map((right) =>
-          right.rights_id === editingRight.rights_id ? updatedRight : right
-        )
+          right.rights_id === editingRight.rights_id ? updatedRight : right,
+        ),
       );
       closeModal();
       toast.success("Right updated successfully!");
@@ -565,7 +579,7 @@ const RightsComponent = () => {
   const handleDeleteRight = useCallback(async (right: RightsRow) => {
     if (
       !confirm(
-        `Are you sure you want to delete this right for ${right.application_name}?`
+        `Are you sure you want to delete this right for ${right.application_name}?`,
       )
     ) {
       return;
@@ -584,6 +598,7 @@ const RightsComponent = () => {
   const formattedRightsJson = useMemo(() => {
     try {
       const json = convertRightsCodeToJSON(formik.values.rightsCodeData);
+
       return JSON.stringify(JSON.parse(json || "{}"), null, 2);
     } catch {
       return "{}";
@@ -652,10 +667,10 @@ const RightsComponent = () => {
                 <label>Application *</label>
                 <select
                   value={formik.values.application_id}
+                  onBlur={() => formik.setFieldTouched("application_id", true)}
                   onChange={(e) =>
                     formik.setFieldValue("application_id", e.target.value)
                   }
-                  onBlur={() => formik.setFieldTouched("application_id", true)}
                 >
                   <option value="">Select Application</option>
                   {availableApplications.map((app) => (
@@ -676,10 +691,10 @@ const RightsComponent = () => {
                 <label>Account *</label>
                 <select
                   value={formik.values.account_id}
+                  onBlur={() => formik.setFieldTouched("account_id", true)}
                   onChange={(e) =>
                     formik.setFieldValue("account_id", e.target.value)
                   }
-                  onBlur={() => formik.setFieldTouched("account_id", true)}
                 >
                   <option value="">Select Account</option>
                   {availableAccounts.map((account) => (
@@ -706,22 +721,22 @@ const RightsComponent = () => {
                     <div className="kv-chip label">Expiry</div>
                     {editingRequired === "expiry" ? (
                       <input
+                        autoFocus
                         className="kv-input"
                         type="date"
                         value={formik.values.rightsCodeData.expiry}
+                        onBlur={() => setEditingRequired(null)}
                         onChange={(e) =>
                           formik.setFieldValue(
                             "rightsCodeData.expiry",
-                            e.target.value
+                            e.target.value,
                           )
                         }
-                        onBlur={() => setEditingRequired(null)}
-                        autoFocus
                       />
                     ) : (
                       <button
-                        type="button"
                         className={`kv-chip ${formik.values.rightsCodeData.expiry ? "" : "placeholder"}`}
+                        type="button"
                         onClick={() => setEditingRequired("expiry")}
                       >
                         {formik.values.rightsCodeData.expiry || "Set…"}
@@ -740,23 +755,23 @@ const RightsComponent = () => {
                     <div className="kv-chip label">Username</div>
                     {editingRequired === "username" ? (
                       <input
+                        autoFocus
                         className="kv-input"
+                        placeholder="Enter username"
                         type="text"
                         value={formik.values.rightsCodeData.username}
-                        placeholder="Enter username"
+                        onBlur={() => setEditingRequired(null)}
                         onChange={(e) =>
                           formik.setFieldValue(
                             "rightsCodeData.username",
-                            e.target.value
+                            e.target.value,
                           )
                         }
-                        onBlur={() => setEditingRequired(null)}
-                        autoFocus
                       />
                     ) : (
                       <button
-                        type="button"
                         className={`kv-chip ${formik.values.rightsCodeData.username ? "" : "placeholder"}`}
+                        type="button"
                         onClick={() => setEditingRequired("username")}
                       >
                         {formik.values.rightsCodeData.username || "Set…"}
@@ -775,24 +790,24 @@ const RightsComponent = () => {
                     <div className="kv-chip label">Total users</div>
                     {editingRequired === "totalNumberUsers" ? (
                       <input
+                        autoFocus
                         className="kv-input"
-                        type="number"
                         min="1"
                         placeholder="Total users"
+                        type="number"
                         value={formik.values.rightsCodeData.totalNumberUsers}
+                        onBlur={() => setEditingRequired(null)}
                         onChange={(e) =>
                           formik.setFieldValue(
                             "rightsCodeData.totalNumberUsers",
-                            e.target.value
+                            e.target.value,
                           )
                         }
-                        onBlur={() => setEditingRequired(null)}
-                        autoFocus
                       />
                     ) : (
                       <button
-                        type="button"
                         className={`kv-chip ${formik.values.rightsCodeData.totalNumberUsers ? "" : "placeholder"}`}
+                        type="button"
                         onClick={() => setEditingRequired("totalNumberUsers")}
                       >
                         {formik.values.rightsCodeData.totalNumberUsers ||
@@ -820,28 +835,29 @@ const RightsComponent = () => {
                   {formik.values.rightsCodeData.customFields.map(
                     (field, index) => {
                       const isEditing = editingCustomIndex === index;
+
                       return (
                         <div key={index} className="kv-row">
                           {isEditing ? (
                             <input
+                              autoFocus
                               className="kv-input"
-                              type="text"
                               placeholder="Field name"
+                              type="text"
                               value={field.key}
                               onChange={(e) => {
                                 updateCustomField(index, "key", e.target.value);
                                 formik.setFieldTouched(
                                   `rightsCodeData.customFields.${index}.key`,
                                   true,
-                                  false
+                                  false,
                                 );
                               }}
-                              autoFocus
                             />
                           ) : (
                             <button
-                              type="button"
                               className={`kv-chip ${field.key ? "" : "placeholder"}`}
+                              type="button"
                               onClick={() => setEditingCustomIndex(index)}
                             >
                               {field.key || "Field name"}
@@ -852,22 +868,22 @@ const RightsComponent = () => {
                             {isEditing ? (
                               <input
                                 className="kv-input kv-input-value"
-                                type="text"
                                 placeholder="Value"
+                                type="text"
                                 value={field.value}
+                                onBlur={() => setEditingCustomIndex(null)}
                                 onChange={(e) => {
                                   updateCustomField(
                                     index,
                                     "value",
-                                    e.target.value
+                                    e.target.value,
                                   );
                                   formik.setFieldTouched(
                                     `rightsCodeData.customFields.${index}.value`,
                                     true,
-                                    false
+                                    false,
                                   );
                                 }}
-                                onBlur={() => setEditingCustomIndex(null)}
                                 onKeyDown={(e) => {
                                   if (e.key === "Enter") {
                                     e.preventDefault();
@@ -877,8 +893,8 @@ const RightsComponent = () => {
                               />
                             ) : (
                               <button
-                                type="button"
                                 className={`kv-chip ${field.value ? "" : "placeholder"}`}
+                                type="button"
                                 onClick={() => setEditingCustomIndex(index)}
                               >
                                 {field.value || "Value"}
@@ -888,10 +904,10 @@ const RightsComponent = () => {
                             {formik.values.rightsCodeData.customFields.length >
                               1 && (
                               <button
-                                type="button"
                                 className="kv-remove"
-                                onClick={() => removeCustomField(index)}
                                 title="Remove"
+                                type="button"
+                                onClick={() => removeCustomField(index)}
                               >
                                 ×
                               </button>
@@ -899,14 +915,14 @@ const RightsComponent = () => {
                           </div>
                         </div>
                       );
-                    }
+                    },
                   )}
                   {/* Add button as last grid item */}
                   <button
-                    type="button"
                     className="kv-add-fab kv-add-in-grid"
-                    onClick={addCustomField}
                     title="Add field"
+                    type="button"
+                    onClick={addCustomField}
                   >
                     <span className="kv-plus">+</span>
                     <span>Add field</span>
@@ -916,8 +932,8 @@ const RightsComponent = () => {
                 {/* Single JSON modal trigger */}
                 <div className="kv-json-actions">
                   <button
-                    type="button"
                     className="kv-json-btn"
+                    type="button"
                     onClick={() => setShowJsonModal(true)}
                   >
                     View JSON
@@ -942,7 +958,6 @@ const RightsComponent = () => {
       )}
       <JsonModal
         isOpen={showJsonModal}
-        title="Rights JSON"
         json={
           showJsonModal
             ? (() => {
@@ -954,6 +969,7 @@ const RightsComponent = () => {
               })()
             : {}
         }
+        title="Rights JSON"
         onClose={() => setShowJsonModal(false)}
         onCopy={() => {
           navigator.clipboard?.writeText(formattedRightsJson);

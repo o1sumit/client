@@ -177,24 +177,24 @@
   .admin-modal-overlay {
     padding: var(--ms-spacing-sm);
   }
-  
+
   .admin-modal {
     max-height: 90vh;
   }
-  
+
   .admin-modal-header {
     padding: var(--ms-spacing-md);
   }
-  
+
   .admin-modal-body {
     padding: var(--ms-spacing-md);
   }
-  
+
   .admin-modal-footer {
     padding: var(--ms-spacing-md);
     flex-direction: column;
   }
-  
+
   .admin-modal-btn {
     width: 100%;
   }

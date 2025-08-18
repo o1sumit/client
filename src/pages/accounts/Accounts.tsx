@@ -41,7 +41,7 @@ const Accounts = () => {
   const [editingAccount, setEditingAccount] = useState<UIAccount | null>(null);
   const [users, setUsers] = useState<User[]>([]);
   const [selectedAccount, setSelectedAccount] = useState<UIAccount | null>(
-    null
+    null,
   );
 
   const [formData, setFormData] = useState<AccountFormData>({
@@ -138,7 +138,7 @@ const Accounts = () => {
     try {
       const response = await accountsAPI.update(
         editingAccount.account_id,
-        formData
+        formData,
       );
       const updatedAccount = response.data?.data;
 
@@ -147,8 +147,8 @@ const Accounts = () => {
 
         setAccounts((prev) =>
           prev.map((acc) =>
-            acc.account_id === editingAccount.account_id ? uiAccount : acc
-          )
+            acc.account_id === editingAccount.account_id ? uiAccount : acc,
+          ),
         );
         toast.success("Account updated successfully");
         setShowAddModal(false);
@@ -174,7 +174,7 @@ const Accounts = () => {
       try {
         await accountsAPI.delete(account.account_id);
         setAccounts((prev) =>
-          prev.filter((acc) => acc.account_id !== account.account_id)
+          prev.filter((acc) => acc.account_id !== account.account_id),
         );
         toast.success("Account deleted successfully");
       } catch (error) {
@@ -219,8 +219,8 @@ const Accounts = () => {
           prev.map((acc) =>
             acc.account_id === selectedAccount.account_id
               ? { ...acc, sharedAccounts: sharingData.sharedAccounts }
-              : acc
-          )
+              : acc,
+          ),
         );
         toast.success("Account sharing updated successfully");
         setShowSharingModal(false);
@@ -582,7 +582,7 @@ const Accounts = () => {
                         {sharingData.sharedAccounts
                           .map((userId) => {
                             const user = users.find(
-                              (u) => u.user_id === userId
+                              (u) => u.user_id === userId,
                             );
 
                             return user ? user.username : userId;

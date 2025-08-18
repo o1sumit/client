@@ -9,7 +9,7 @@ export default defineConfig({
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),
       "@components": fileURLToPath(
-        new URL("./src/components", import.meta.url)
+        new URL("./src/components", import.meta.url),
       ),
       "@lib": fileURLToPath(new URL("./src/lib", import.meta.url)),
       "@services": fileURLToPath(new URL("./src/services", import.meta.url)),
@@ -17,10 +17,10 @@ export default defineConfig({
       "@types": fileURLToPath(new URL("./src/types", import.meta.url)),
       "@utils": fileURLToPath(new URL("./src/utils", import.meta.url)),
       "@store/slices": fileURLToPath(
-        new URL("./src/store/slices", import.meta.url)
+        new URL("./src/store/slices", import.meta.url),
       ),
       "@store/index": fileURLToPath(
-        new URL("./src/store/index", import.meta.url)
+        new URL("./src/store/index", import.meta.url),
       ),
       "@pages": fileURLToPath(new URL("./src/pages", import.meta.url)),
     },
