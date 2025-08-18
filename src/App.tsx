@@ -23,6 +23,7 @@ import Users from "@/pages/users/Users";
 import RightsComponent from "@/pages/rights/Rights";
 import Applications from "@/pages/applications/Applications";
 import Accounts from "@/pages/accounts/Accounts";
+
 import "./index.css";
 import { authAPI } from "@services/api";
 
@@ -50,13 +51,14 @@ function App() {
       window.location.reload(); // Simple refresh to re-fetch user data
     } catch (error: any) {
       console.error("Failed to submit invite code:", error);
-      
+
       // Extract error message from the response
-      const errorMessage = error?.response?.data?.error || 
-                          error?.response?.data?.message || 
-                          error?.message || 
-                          "Invalid invite code. Please check your code and try again.";
-      
+      const errorMessage =
+        error?.response?.data?.error ||
+        error?.response?.data?.message ||
+        error?.message ||
+        "Invalid invite code. Please check your code and try again.";
+
       setInviteError(errorMessage);
     } finally {
       setIsSubmittingInvite(false);
@@ -90,6 +92,7 @@ function App() {
         } else if (res?.data?.data?.role === "admin") {
           dispatch(setUser(res.data.data));
         }
+
         return res.data;
       });
 
@@ -145,12 +148,12 @@ function App() {
 
           {/* Invite Code Modal */}
           <InviteCodeModal
-            isOpen={showInviteModal}
-            onClose={handleInviteCancel}
-            onSubmit={handleInviteSubmit}
             isLoading={isSubmittingInvite}
+            isOpen={showInviteModal}
             serverError={inviteError}
             onClearServerError={() => setInviteError("")}
+            onClose={handleInviteCancel}
+            onSubmit={handleInviteSubmit}
           />
         </div>
       </Router>

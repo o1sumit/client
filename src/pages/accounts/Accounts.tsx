@@ -56,12 +56,6 @@ const Accounts = () => {
     sharedAccounts: [] as string[],
   });
 
-  const availableUsers = [
-    { user_id: "user-001", user_name: "John Doe" },
-    { user_id: "user-002", user_name: "Jane Smith" },
-    { user_id: "user-003", user_name: "Bob Johnson" },
-  ];
-
   // Load accounts from API
   useEffect(() => {
     const loadAccounts = async () => {
@@ -70,10 +64,6 @@ const Accounts = () => {
         const response = await accountsAPI.getAll();
         // get all users
         const usersResponse = await usersAPI.getAll();
-
-        console.log("=== RAW API RESPONSE ===");
-        console.log("Response:", response);
-        console.log("Response.data:", response.data);
         const usersData = usersResponse.data as ApiResponse<User[]>;
         const users = usersData.success && usersData.data ? usersData.data : [];
 
@@ -86,14 +76,11 @@ const Accounts = () => {
             ? apiResponse.data
             : (response.data as unknown as any[]);
 
-        console.log("Accounts data:", accountsData);
-
         // Map to UI model
         const mappedAccounts: UIAccount[] = (
           Array.isArray(accountsData) ? accountsData : []
         ).map(mapToUIAccount);
 
-        console.log("Final mapped accounts:", mappedAccounts);
         setAccounts(mappedAccounts);
       } catch (error) {
         console.error("Failed to load accounts:", error);
@@ -198,12 +185,6 @@ const Accounts = () => {
   };
 
   const handleViewAccount = (account: UIAccount) => {
-    console.log("=== OPENING SHARE MODAL ===");
-    console.log("Account:", account);
-    console.log("Available users:", users);
-
-    // Verify the account has sharedAccounts field
-
     setSelectedAccount(account);
     setSharingData({
       sharedAccounts: [],
@@ -214,44 +195,26 @@ const Accounts = () => {
   // Reset sharing data when modal opens
   useEffect(() => {
     if (showSharingModal && selectedAccount) {
-      console.log("=== MODAL OPENED ===");
-      console.log("Selected account:", selectedAccount);
-      console.log("Selected account sharedAccounts:");
-      console.log("Current sharingData:", sharingData);
-
-      const initialSharedAccounts: string[] = [];
-
-      console.log("Setting initial sharedAccounts:", initialSharedAccounts);
+      // Find users already associated with this account
+      const alreadyAssociatedUsers = users
+        .filter((user) => user.account_id === selectedAccount.account_id)
+        .map((user) => user.user_id);
 
       setSharingData({
-        sharedAccounts: initialSharedAccounts,
+        sharedAccounts: alreadyAssociatedUsers,
       });
     }
-  }, [showSharingModal, selectedAccount]);
+  }, [showSharingModal, selectedAccount, users]);
 
   const handleShareAccount = async () => {
     if (!selectedAccount) return;
 
-    console.log("=== SHARING ACCOUNT ===");
-    console.log("Selected account:", selectedAccount);
-    console.log("Sharing data:", sharingData);
-    console.log("API call payload:", {
-      sharedAccounts: sharingData.sharedAccounts,
-    });
-
     try {
-      debugger;
-      // Call the API to update account sharing and replace pointing account_id with the selected account_id
       const response = await usersAPI.update(sharingData.sharedAccounts[0], {
-        // ...users.find((user) => user.user_id === sharingData.sharedAccounts[0]),
         account_id: selectedAccount.account_id,
       });
 
-      console.log("API response:", response);
-      console.log("Response data:", response.data);
-
       if (response.data.success) {
-        // Update local state with the response from API
         setAccounts((prev) =>
           prev.map((acc) =>
             acc.account_id === selectedAccount.account_id
@@ -263,20 +226,9 @@ const Accounts = () => {
         setShowSharingModal(false);
         setSelectedAccount(null);
       } else {
-        console.error("API returned success: false");
-        console.error("API error:", response.data);
         toast.error("Failed to update account sharing");
       }
     } catch (error) {
-      console.error("=== SHARING ERROR ===");
-      console.error("Error object:", error);
-      const axiosError = error as {
-        response?: { data?: unknown; status?: number };
-      };
-
-      console.error("Error response:", axiosError.response);
-      console.error("Error data:", axiosError.response?.data);
-      console.error("Error status:", axiosError.response?.status);
       toast.error("Failed to update account sharing");
     }
   };
@@ -569,37 +521,34 @@ const Accounts = () => {
                 <label>Share with Users</label>
                 <div className="users-list">
                   {users.map((user) => {
-                    const isShared = sharingData.sharedAccounts.includes(
-                      user.user_id
-                    );
-
-                    console.log(
-                      `🔍 Checkbox for ${user.username} (${user.user_id}):`
-                    );
-                    console.log(
-                      `  - sharingData.sharedAccounts:`,
-                      sharingData.sharedAccounts
-                    );
-                    console.log(`  - user.id: ${user.user_id}`);
-                    console.log(
-                      `  - includes check: ${sharingData.sharedAccounts.includes(
-                        user.user_id
-                      )}`
-                    );
-                    console.log(`  - isShared: ${isShared}`);
+                    const isCurrentlySelected =
+                      sharingData.sharedAccounts.includes(user.user_id);
+                    const isAlreadyAssociated =
+                      user.account_id === selectedAccount.account_id;
+                    const isNewlySelected =
+                      isCurrentlySelected && !isAlreadyAssociated;
 
                     return (
                       <label key={user.user_id} className="user-checkbox">
                         <input
-                          checked={isShared}
+                          checked={isCurrentlySelected}
                           type="checkbox"
                           onChange={() => handleUserToggle(user.user_id)}
                         />
                         <span style={{ marginLeft: "8px" }}>
                           {user.username}{" "}
-                          {isShared && (
+                          {isAlreadyAssociated && (
+                            <span
+                              style={{ color: "blue", fontWeight: "bold" }}
+                              title="Already associated with this account"
+                            >
+                              ★
+                            </span>
+                          )}
+                          {isNewlySelected && (
                             <span
                               style={{ color: "green", fontWeight: "bold" }}
+                              title="Newly selected for sharing"
                             >
                               ✓
                             </span>
