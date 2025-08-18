@@ -1,0 +1,178 @@
+/* Chip-style key/value editor aligned with compact Fluent UI in index.css */
+
+.kv-grid {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: var(--ms-spacing-sm) var(--ms-spacing-md);
+}
+
+.kv-chip,
+.kv-input {
+	background: var(--ms-bg-primary);
+	border: 1px solid var(--ms-border-primary);
+	border-radius: var(--ms-radius-md);
+	min-height: 32px;
+	padding: var(--ms-spacing-xs) var(--ms-spacing-sm);
+	font-size: var(--ms-font-size-sm);
+	color: var(--ms-text-primary);
+}
+
+.kv-chip {
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	font-weight: 400;
+	background: var(--ms-bg-primary);
+	cursor: pointer;
+	text-align: left;
+}
+
+/* left-side label chip (non-clickable, lower emphasis) */
+.kv-chip.label { color: var(--ms-text-secondary); cursor: default; font-weight: 400; }
+
+.kv-chip.placeholder {
+	color: var(--ms-text-secondary);
+	font-weight: 400;
+}
+
+.kv-input {
+	background: var(--ms-bg-primary);
+	height: 32px;
+}
+
+.kv-sep {
+	align-self: center;
+	text-align: center;
+	color: var(--ms-text-secondary);
+}
+
+.kv-row {
+	display: contents; /* grid row composed of both columns */
+}
+
+/* Value cell wraps input/chip and inline remove button */
+.kv-value {
+	position: relative;
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.kv-input-value {
+	flex: 1;
+}
+
+/* Make value cell content fill and leave room for inline remove */
+.kv-value .kv-chip,
+.kv-value .kv-input {
+	width: 100%;
+	padding-right: calc(var(--ms-spacing-sm) + 26px);
+}
+
+.kv-actions {
+	margin-top: var(--ms-spacing-sm);
+	display: flex;
+	gap: var(--ms-spacing-sm);
+	align-items: center;
+}
+
+/* JSON actions row */
+.kv-json-actions {
+	display: flex;
+	gap: var(--ms-spacing-sm);
+	margin-top: var(--ms-spacing-sm);
+}
+
+.kv-json-btn {
+	background: var(--ms-bg-primary);
+	border: 1px solid var(--ms-border-primary);
+	border-radius: var(--ms-radius-md);
+	padding: 0 var(--ms-spacing-sm);
+	height: 32px;
+	font-size: var(--ms-font-size-sm);
+	color: var(--ms-text-primary);
+	cursor: pointer;
+}
+
+.kv-json-btn:hover { border-color: var(--ms-primary); }
+
+/* Floating add button like screenshot */
+
+.kv-add-fab {
+	width: 100%;
+	height: 32px;
+	border-radius: var(--ms-radius-md);
+	background: var(--ms-bg-primary);
+	color: var(--ms-text-secondary);
+	border: 1px solid var(--ms-border-primary);
+	cursor: pointer;
+	display: inline-flex;
+	align-items: center;
+	justify-content: flex-start;
+	gap: 8px;
+	padding: 0 var(--ms-spacing-sm);
+	font-weight: 400;
+	font-size: var(--ms-font-size-sm);
+}
+
+.kv-add-fab:hover { border-color: var(--ms-primary); }
+
+/* Place add button at the end of the grid with same column width */
+.kv-add-in-grid {
+	grid-column: span 1; /* half width like a field */
+	justify-self: start;
+}
+
+.kv-plus {
+	width: 18px;
+	height: 18px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	background: var(--ms-primary);
+	color: var(--ms-white);
+	font-weight: 800;
+	border-radius: 50%;
+	line-height: 1;
+}
+
+.kv-remove {
+	position: absolute;
+	right: 6px;
+	top: 50%;
+	transform: translateY(-50%);
+	width: 22px;
+	height: 22px;
+	border-radius: 50%;
+	border: none;
+	background: transparent;
+	color: var(--ms-text-secondary);
+	cursor: pointer;
+}
+.kv-remove:hover { color: var(--ms-error); }
+
+.kv-preview {
+	margin-top: var(--ms-spacing-sm);
+	background: #1f2937;
+	color: #e5e7eb;
+	border-radius: var(--ms-radius-xl);
+	border: 1px solid #374151;
+	padding: var(--ms-spacing-md);
+	font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+	font-size: var(--ms-font-size-sm);
+}
+
+@media (max-width: 768px) {
+	.kv-grid { grid-template-columns: 1fr; }
+}
+
+/* Hover/focus states for better affordance */
+.kv-chip:hover { border-color: var(--ms-primary); }
+
+.kv-input:focus {
+	outline: none;
+	border-color: var(--ms-primary);
+	box-shadow: 0 0 0 2px rgba(0, 120, 212, 0.2);
+}
+
+
