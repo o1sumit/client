@@ -12,7 +12,7 @@ export const fetchRights = createAsyncThunk(
     const response = await rightsAPI.getAll(params);
 
     return response.data?.data || [];
-  },
+  }
 );
 
 export const createRights = createAsyncThunk(
@@ -26,7 +26,7 @@ export const createRights = createAsyncThunk(
     const response = await rightsAPI.create(rightsData);
 
     return response.data?.data;
-  },
+  }
 );
 
 export const updateRights = createAsyncThunk(
@@ -35,7 +35,7 @@ export const updateRights = createAsyncThunk(
     const response = await rightsAPI.update(id, data);
 
     return response.data?.data;
-  },
+  }
 );
 
 export const deleteRights = createAsyncThunk(
@@ -44,7 +44,7 @@ export const deleteRights = createAsyncThunk(
     await rightsAPI.delete(id);
 
     return id;
-  },
+  }
 );
 
 export const verifyRights = createAsyncThunk(
@@ -57,7 +57,7 @@ export const verifyRights = createAsyncThunk(
     const response = await rightsAPI.verify(data);
 
     return response.data;
-  },
+  }
 );
 
 // State interface
@@ -103,7 +103,7 @@ const rightsSlice = createSlice({
         (state, action: PayloadAction<Rights[]>) => {
           state.loading = false;
           state.rights = action.payload;
-        },
+        }
       )
       .addCase(fetchRights.rejected, (state, action) => {
         state.loading = false;
@@ -123,7 +123,7 @@ const rightsSlice = createSlice({
           if (action.payload) {
             state.rights.unshift(action.payload);
           }
-        },
+        }
       )
       .addCase(createRights.rejected, (state, action) => {
         state.loading = false;
@@ -142,14 +142,14 @@ const rightsSlice = createSlice({
           state.loading = false;
           if (action.payload) {
             const index = state.rights.findIndex(
-              (right) => right.id === action.payload!.id,
+              (right) => right.id === action.payload!.id
             );
 
             if (index !== -1) {
               state.rights[index] = action.payload;
             }
           }
-        },
+        }
       )
       .addCase(updateRights.rejected, (state, action) => {
         state.loading = false;
@@ -167,9 +167,9 @@ const rightsSlice = createSlice({
         (state, action: PayloadAction<string>) => {
           state.loading = false;
           state.rights = state.rights.filter(
-            (right) => right.id !== action.payload,
+            (right) => right.id !== action.payload
           );
-        },
+        }
       )
       .addCase(deleteRights.rejected, (state, action) => {
         state.loading = false;
